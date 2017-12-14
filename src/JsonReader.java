@@ -10,22 +10,23 @@ import java.io.IOException;
 /**
  * Created by angel on 13/12/2017.
  */
-public class JsonReader {
+class JsonReader {
 
     /**
      * Carrega i llegeix el fitxer Json corresponent
      * @return el fitxer Json llegit en forma JsonObject
      */
-    JsonObject lectura(){
+    JsonObject lectura(String path){
         JsonObject jsonObject = new JsonObject();
         Gson gson = new Gson();
         BufferedReader br = null;
         try {
-            FileReader fr = new FileReader("favoritePlaces.json");
+            FileReader fr = new FileReader(path);
             br = new BufferedReader(fr);
             jsonObject = gson.fromJson(br, JsonObject.class);
         } catch (FileNotFoundException ko) {
-            ko.printStackTrace();
+            System.out.println("Error! Fitxer no trobat!");
+            //return null;
         } finally {
             if (br != null) {
                 try {
