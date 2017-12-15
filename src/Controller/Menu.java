@@ -2,9 +2,13 @@ package Controller;
 
 import Utils.JsonReader;
 import View.WarehouseView;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -14,7 +18,7 @@ import java.util.Scanner;
 public class Menu {
     private JsonReader jsonReader = new JsonReader();
     private JsonObject configJson;
-    private JsonObject infoJson;
+    private JsonArray infoJson;
 
     /**
      * Permite la eleccion de las dintintas opciones del menu comprendidas entre 1 y 5 incluidas, con control de erorres
@@ -58,16 +62,18 @@ public class Menu {
     }
 
     /**
-     * Ejecuta la opcion1 del menu
+     * Pide el path del fichero json de configuracion i lo lee
      */
     private void opcio1() {
         System.out.println("Introduiex la ubicació del fitxer json de configuracio: ");
         Scanner read = new Scanner(System.in);
         String path = read.nextLine();
 
-        configJson = jsonReader.lectura(path);
+        configJson = jsonReader.lecturaObject(path);
 
-        configuraEscenari();
+        if (configJson.size() != 0){
+            configuraEscenari();
+        }
     }
 
     /**
@@ -103,16 +109,37 @@ public class Menu {
         }
     }
 
+    /**
+     * Pide el path del json con la informacion del warehouse y el path del fichero de probabilidades de productos y los trata
+     */
     private void opcio2() {
+
         System.out.println("Introduiex la ubicació del fitxer json amb la informacio dels productes: ");
         Scanner read = new Scanner(System.in);
         String path = read.nextLine();
 
-        infoJson = jsonReader.lectura(path);
+        infoJson = jsonReader.lecturaArray(path);
+
+        float adyaciente [][] = new float[infoJson.size() + 1][infoJson.size() + 1];
 
         System.out.println("Introduiex la ubicació del fitxer de probabilitats d'aparició dels productes: ");
         path = read.nextLine();
 
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(path));
+
+            String line;
+            while((line = in.readLine()) != null)
+            {
+                int p1 = Character.getNumericValue(line.charAt(0));
+                int p2 = Character.getNumericValue(line.charAt(2));
+                float prob = Float.parseFloat(line.substring(3, 6));
+                adyaciente[p1][p2] = prob;
+            }
+            in.close();
+        }catch (IOException e){
+            System.out.println("Error! Fitxer no trobat!");
+        }
     }
 
     private void opcio3() {
