@@ -49,6 +49,7 @@ public class BoxListener implements MouseListener {
         else {
 
             // TODO: deixar a l'alumne per fer
+            System.out.println("casella plena!");
         }
     }
 

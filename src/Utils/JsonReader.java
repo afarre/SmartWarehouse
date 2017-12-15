@@ -1,3 +1,5 @@
+package Utils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -10,13 +12,14 @@ import java.io.IOException;
 /**
  * Created by angel on 13/12/2017.
  */
-class JsonReader {
+public class JsonReader {
 
     /**
-     * Carrega i llegeix el fitxer Json corresponent
-     * @return el fitxer Json llegit en forma JsonObject
+     * Carga y lee un fichero json
+     * @param path Directorio donde se ubica el fichero json a leer
+     * @return el fichero json leido
      */
-    JsonObject lectura(String path){
+    public JsonObject lectura(String path){
         JsonObject jsonObject = new JsonObject();
         Gson gson = new Gson();
         BufferedReader br = null;
