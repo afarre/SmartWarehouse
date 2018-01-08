@@ -20,6 +20,18 @@ public class Menu {
     private JsonObject configJson;
     private JsonArray infoJson;
 
+    private float[][] adyacencia;
+
+    /**
+     * Indica si el almacen ya esta configurado para poder distribuir los diferentes producotos en las diferentes estanterias
+     */
+    private boolean whReadyDist;
+
+
+    public Menu(){
+      whReadyDist = false;
+    }
+
     /**
      * Permite la eleccion de las dintintas opciones del menu comprendidas entre 1 y 5 incluidas, con control de erorres
      */
@@ -131,7 +143,7 @@ public class Menu {
 
         infoJson = jsonReader.lecturaArray(path);
 
-        float adyaciente [][] = new float[infoJson.size() + 1][infoJson.size() + 1];
+        adyacencia = new float[infoJson.size() + 1][infoJson.size() + 1];
 
         System.out.println("Introduiex la ubicació del fitxer de probabilitats d'aparició dels productes: ");
         path = read.nextLine();
@@ -144,19 +156,31 @@ public class Menu {
             {
                 int p1 = Character.getNumericValue(line.charAt(0));
                 int p2 = Character.getNumericValue(line.charAt(2));
-                float prob = Float.parseFloat(line.substring(3, 6));
-                adyaciente[p1][p2] = prob;
+                System.out.println(line.substring(4, 7));
+                float prob = Float.parseFloat(line.substring(4, 7));
+                adyacencia[p1][p2] = prob;
             }
             in.close();
+            whReadyDist = true;
         }catch (IOException e){
             System.out.println("Error! Fitxer no trobat!");
         }
     }
 
+    /**
+     * Distribucion de productos en las diferentes estanterias del almacen
+     */
     private void opcio3() {
+        if(!whReadyDist){
+            System.out.println("Antes de distribuir los productos se debe configurar el almacen! Asegurese de que ha llevado a cabo con éxito las opciones 1 y 2!");
+            return;
+        }
 
     }
 
+    /**
+     * Realizacion de pedido: calculo de la ruta mas corta de preparacion del pedido para su envio
+     */
     private void opcio4() {
 
     }
