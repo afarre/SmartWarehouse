@@ -1,10 +1,6 @@
-package Controller;
+package controller;
 
-import Model.Box;
-import Model.Product;
-import Model.Shelve;
-import Model.Warehouse;
-import View.WarehouseView;
+import view.WarehouseView;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -15,7 +11,7 @@ import java.awt.event.MouseListener;
  * Material pràctica 1 Programació Avançada i Estructura de Dades
  * Enginyeria Informàtica
  * © La Salle Campus Barcelona - Departament d'Enginyeria
- * 
+ *
  * Aquesta classe permet l'actualització de la GUI amb les dades del
  * magatzem donat que escolta els clics realitzats sobre la interfície
  * gràfica. El mètode 'mouseClicked' es crida cada cop que una casella
@@ -32,11 +28,13 @@ public class BoxListener implements MouseListener {
 
 
     private WarehouseView view;
+    // ...
+
+
 
     public BoxListener(WarehouseView view) {
-
-
         this.view = view;
+        // ...
     }
 
     @Override
@@ -47,9 +45,9 @@ public class BoxListener implements MouseListener {
         Point p = view.getBoxClickedPosition(point);
         if (p == null) System.out.println("null point");
         else {
-
             // TODO: deixar a l'alumne per fer
-            System.out.println("casella plena!");
+            // ...
+            System.out.println("han fet clic...");
         }
     }
 

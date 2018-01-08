@@ -171,10 +171,7 @@ public class Menu {
      * Distribucion de productos en las diferentes estanterias del almacen
      */
     private void opcio3() {
-        if(!whReadyDist){
-            System.out.println("Antes de distribuir los productos se debe configurar el almacen! Asegurese de que ha llevado a cabo con éxito las opciones 1 y 2!");
-            return;
-        }
+
 
     }
 

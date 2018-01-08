@@ -1,4 +1,6 @@
-package View;
+package view;
+
+import controller.BoxListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -207,7 +209,7 @@ public class WarehouseView extends JFrame {
      * Obté la posició (x, y) de la casella que s'ha clicat.
      *
      * @param rawPoint El punt (x,y) però respecte la pantalla i no la matriu.
-     *                 
+     *
      * @return El punt (x, y) de la matriu que s'ha clicat.
      */
     public Point getBoxClickedPosition(Point rawPoint) {
@@ -246,21 +248,26 @@ public class WarehouseView extends JFrame {
      * Un exemple de com utilitzar la gràfica
      * @param args
      */
-    /*
     public static void main(String []args) {
 
 
         boolean [][]matrix = new boolean[7][4]; // instanciem una matriu que representa el magatzem
+
         for (int i = 0; i < matrix[0].length - 1; i++)
             matrix[0][i] = matrix[2][i] = true; // afegim prestatgeries
 
-        // creem el magatzem amb la matriu anterior i el punt (x,y) d'entrada
+        // Creem la vista
+        // usem el magatzem amb la matriu anterior i el punt (x,y) d'entrada
         WarehouseView view = new WarehouseView(matrix, 1, 0);
+
+        // Creem el controlador
+        BoxListener controlador = new BoxListener(view);
+        // Establim la relació entre la vista i el controlador
+        view.setMapMouseListener(controlador);
 
         /* Actualitzem el panell d'informació d'una casella en les diferents altures
          * en, imaginariament, el punt (x,y)=(0,0).
         */
-    /*
         view.setBoxInfo(
                 new String[] {
                         "(x,y,z)=(0,0,0) P1 - ID: 1234",
@@ -273,6 +280,8 @@ public class WarehouseView extends JFrame {
         view.setTrackCost(15);  // actualitzem el cost que té un recorregut realitzat
 
         view.paintCell(3, 3, Color.RED);    // la casella en el punt (3,3) passarà a ser vermella
+        // Mostrem la vista
+        view.setVisible(true);
     }
-*/
+
 }
