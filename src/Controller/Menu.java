@@ -46,14 +46,9 @@ public class Menu {
     private HashMap<Integer, Integer> indexes;
 
     /**
-     * Indica si el almacen ya esta configurado para poder distribuir los diferentes producotos en las diferentes estanterias
+     * Ventana que muestra el estado del almacen en cada momento
      */
-    private boolean whReadyDist;
-
-
-    public Menu(){
-      whReadyDist = false;
-    }
+    private WarehouseView warehouseView;
 
     /**
      * Permite la eleccion de las dintintas opciones del menu comprendidas entre 1 y 5 incluidas, con control de erorres
@@ -160,7 +155,7 @@ public class Menu {
         }
 
         //-----------------Inicializamos la vistacon la casilla de entrada al almacen
-        WarehouseView warehouseView = new WarehouseView(
+        warehouseView = new WarehouseView(
                 map,
                 entranceX,
                 entranceY
@@ -239,7 +234,6 @@ public class Menu {
                 adyacencia[indexes.get(p1)][indexes.get(p2)] = prob;
             }
             in.close();
-            whReadyDist = true;
         }catch (IOException e){
             System.out.println("Error! Fitxer no trobat!");
             return;
