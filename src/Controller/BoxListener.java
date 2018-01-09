@@ -1,6 +1,6 @@
-package controller;
+package Controller;
 
-import view.WarehouseView;
+import View.WarehouseView;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -28,7 +28,6 @@ public class BoxListener implements MouseListener {
 
 
     private WarehouseView view;
-    // ...
 
 
 

@@ -9,6 +9,7 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -20,7 +21,17 @@ public class Menu {
     private JsonObject configJson;
     private JsonArray infoJson;
 
+    /**
+     *  Matriz de adyacencias que guarda las  probabilidades de que dos productos esten juntos en un mismo pedido
+     */
+
     private float[][] adyacencia;
+
+    /**
+     * Mapa de hash que almacena los pares idProducto-indiceDeAdyacencia para que el acceso a la matriz
+     * sea lo mas rapido posible
+     */
+    private HashMap<Integer, Integer> indexes;
 
     /**
      * Indica si el almacen ya esta configurado para poder distribuir los diferentes producotos en las diferentes estanterias
@@ -144,6 +155,8 @@ public class Menu {
         infoJson = jsonReader.lecturaArray(path);
 
         adyacencia = new float[infoJson.size() + 1][infoJson.size() + 1];
+        indexes = new HashMap<>();
+        int i = 0;
 
         System.out.println("Introduiex la ubicació del fitxer de probabilitats d'aparició dels productes: ");
         path = read.nextLine();
@@ -152,13 +165,24 @@ public class Menu {
             BufferedReader in = new BufferedReader(new FileReader(path));
 
             String line;
+            String[] lineParts;
             while((line = in.readLine()) != null)
             {
-                int p1 = Character.getNumericValue(line.charAt(0));
-                int p2 = Character.getNumericValue(line.charAt(2));
-                System.out.println(line.substring(4, 7));
-                float prob = Float.parseFloat(line.substring(4, 7));
-                adyacencia[p1][p2] = prob;
+                lineParts = line.split(" ");
+                int p1 = Integer.parseInt(lineParts[0]);
+                int p2 = Integer.parseInt(lineParts[1]);
+                System.out.println(lineParts[2]);
+                float prob = Float.parseFloat(lineParts[2]);
+
+                if(!indexes.containsKey(p1)){
+                    indexes.put(p1, i);
+                    i++;
+                }
+                if(!indexes.containsKey(p2)){
+                    indexes.put(p2, i);
+                    i++;
+                }
+                adyacencia[indexes.get(p1)][indexes.get(p2)] = prob;
             }
             in.close();
             whReadyDist = true;

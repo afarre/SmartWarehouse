@@ -1,6 +1,6 @@
-package view;
+package View;
 
-import controller.BoxListener;
+import Controller.BoxListener;
 
 import javax.swing.*;
 import java.awt.*;
