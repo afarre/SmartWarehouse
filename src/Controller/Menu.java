@@ -1,5 +1,7 @@
 package Controller;
 
+import Model.Shelve;
+import Model.Warehouse;
 import Utils.JsonReader;
 import View.WarehouseView;
 import com.google.gson.JsonArray;
@@ -20,6 +22,16 @@ public class Menu {
     private JsonReader jsonReader = new JsonReader();
     private JsonObject configJson;
     private JsonArray infoJson;
+
+    /**
+     * Modelo del almacen donde se guardan todos los datos de estanterias
+     */
+    private Warehouse warehouse;
+
+    /**
+     * Mapa del almacen, donde se indica dónde hay estanterias y donde no
+     */
+    boolean map[][];
 
     /**
      *  Matriz de adyacencias que guarda las  probabilidades de que dos productos esten juntos en un mismo pedido
@@ -105,8 +117,16 @@ public class Menu {
      */
     private void configuraEscenari() {
 
-        boolean map[][] = new boolean[configJson.get("dim").getAsJsonObject().get("max_x").getAsInt()]
-                [configJson.get("dim").getAsJsonObject().get("max_y").getAsInt()];
+        int maxX = configJson.get("dim").getAsJsonObject().get("max_x").getAsInt();
+        int maxY = configJson.get("dim").getAsJsonObject().get("max_y").getAsInt();
+
+        int entranceX = configJson.get("entrance").getAsJsonObject().get("x").getAsInt();
+        int entranceY = configJson.get("entrance").getAsJsonObject().get("y").getAsInt();
+
+        warehouse = new Warehouse(maxX, maxY, entranceX, entranceY);
+
+        //****************MONTAGE DE LA MATRIZ DE BOOLEANOS QUE INDICA DONDE HAY ESTANTERIAS Y DONDE NO***************//
+        map = new boolean[maxX][maxY];
 
         int size = configJson.get("shelves").getAsJsonArray().size(),
                 sSize = configJson.get("shelves_config").getAsJsonArray().size();
@@ -117,27 +137,33 @@ public class Menu {
                 if (configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("id").getAsInt()
                         == configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("config").getAsInt()){
 
+                    int len = configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("length").getAsInt();
+                    int xstart = configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("x_start").getAsInt();
+                    int ystart = configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("y_start").getAsInt();
+
                     if (configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("orientation").getAsString().equals("V")){
 
-                        int len = configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("length").getAsInt();
                         for (int k = 0; k < len; k++){
-                            map[configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("x_start").getAsInt()][configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("y_start").getAsInt() + k] = true;
+                            map[xstart][ystart + k] = true;
+                            warehouse.addShelve(new Shelve(), xstart, ystart + k);
                         }
 
                     } else {
-                        int len = configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("length").getAsInt();
+
                         for (int k = 0; k < len; k++){
-                            map[configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("x_start").getAsInt() + k][configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("y_start").getAsInt()] = true;
+                            map[xstart + k] [ystart] = true;
+                            warehouse.addShelve(new Shelve(), xstart + k, ystart);
                         }
                     }
                 }
             }
         }
-        //Inicializamos la vistacon la casilla de entrada al almacen
+
+        //-----------------Inicializamos la vistacon la casilla de entrada al almacen
         WarehouseView warehouseView = new WarehouseView(
                 map,
-                configJson.get("entrance").getAsJsonObject().get("x").getAsInt(),
-                configJson.get("entrance").getAsJsonObject().get("y").getAsInt()
+                entranceX,
+                entranceY
         );
 
         BoxListener boxListener = new BoxListener(warehouseView);

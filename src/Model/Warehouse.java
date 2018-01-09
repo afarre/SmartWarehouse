@@ -7,8 +7,13 @@ public class Warehouse {
 
     private Shelve[][] wh;
 
-    public Warehouse(int maxX, int maxY){
+    private int entranceX;
+    private int entranceY;
+
+    public Warehouse(int maxX, int maxY, int entranceX, int entranceY){
         wh = new Shelve[maxX][maxY];
+        this.entranceX = entranceX;
+        this.entranceY = entranceY;
     }
 
     public boolean addShelve(Shelve s, int x, int y){
