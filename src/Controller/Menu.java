@@ -93,6 +93,7 @@ public class Menu {
         String path = read.nextLine();
 
         configJson = jsonReader.lecturaObject(path);
+        if(configJson == null) return;
 
         if (configJson.size() != 0){
             configuraEscenari();
@@ -103,38 +104,64 @@ public class Menu {
      * A partir del json de configuración genera la vista con el escenario correspondiente
      */
     private void configuraEscenari() {
-        boolean map[][] = new boolean[configJson.get("dim").getAsJsonObject().get("max_x").getAsInt()][configJson.get("dim").getAsJsonObject().get("max_y").getAsInt()];
 
-        for (int i = 0; i < configJson.get("shelves").getAsJsonArray().size(); i++){
-            for (int j = 0; j < configJson.get("shelves_config").getAsJsonArray().size(); j++){
-                if (configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("id").getAsInt() == configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("config").getAsInt()){
+        boolean map[][] = new boolean[configJson.get("dim").getAsJsonObject().get("max_x").getAsInt()]
+                [configJson.get("dim").getAsJsonObject().get("max_y").getAsInt()];
+
+        int size = configJson.get("shelves").getAsJsonArray().size(),
+                sSize = configJson.get("shelves_config").getAsJsonArray().size();
+
+        for (int i = 0; i < size; i++){
+            for (int j = 0; j < sSize; j++){
+
+                if (configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("id").getAsInt()
+                        == configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("config").getAsInt()){
+
                     if (configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("orientation").getAsString().equals("V")){
-                        for (int k = 0; k < configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("length").getAsInt(); k++){
+
+                        int len = configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("length").getAsInt();
+                        for (int k = 0; k < len; k++){
                             map[configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("x_start").getAsInt()][configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("y_start").getAsInt() + k] = true;
                         }
+
                     } else {
-                        for (int k = 0; k < configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("length").getAsInt(); k++){
+                        int len = configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("length").getAsInt();
+                        for (int k = 0; k < len; k++){
                             map[configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("x_start").getAsInt() + k][configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("y_start").getAsInt()] = true;
                         }
                     }
                 }
             }
         }
+        //Inicializamos la vistacon la casilla de entrada al almacen
+        WarehouseView warehouseView = new WarehouseView(
+                map,
+                configJson.get("entrance").getAsJsonObject().get("x").getAsInt(),
+                configJson.get("entrance").getAsJsonObject().get("y").getAsInt()
+        );
 
-        WarehouseView warehouseView = new WarehouseView(map, configJson.get("entrance").getAsJsonObject().get("x").getAsInt(), configJson.get("entrance").getAsJsonObject().get("y").getAsInt());
         BoxListener boxListener = new BoxListener(warehouseView);
         warehouseView.setMapMouseListener(boxListener);
 
+        for (int i = 0; i < size; i++){
 
-        for (int i = 0; i < configJson.get("shelves").getAsJsonArray().size(); i++){
-            for (int j = 0; j < configJson.get("shelves_config").getAsJsonArray().size(); j++){
-                if (configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("id").getAsInt() == configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("config").getAsInt()){
-                    if (configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("orientation").getAsString().equals("V")){
-                        for (int k = 0; k < configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("length").getAsInt(); k++){
+            for (int j = 0; j < sSize; j++){
+
+                if (configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("id").getAsInt()
+                        == configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("config").getAsInt()){
+
+                    if (configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("orientation").getAsString()
+                            .equals("V")){
+
+                        int len = configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("length").getAsInt();
+                        for (int k = 0; k < len; k++){
                             warehouseView.paintCell(configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("x_start").getAsInt(), configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("y_start").getAsInt() + k, Color.BLUE);
                         }
+
                     } else {
-                        for (int k = 0; k < configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("length").getAsInt(); k++){
+
+                        int len = configJson.get("shelves_config").getAsJsonArray().get(j).getAsJsonObject().get("length").getAsInt();
+                        for (int k = 0; k < len; k++){
                             warehouseView.paintCell(configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("x_start").getAsInt() + k, configJson.get("shelves").getAsJsonArray().get(i).getAsJsonObject().get("y_start").getAsInt(), Color.BLUE);
                         }
                     }
@@ -153,6 +180,7 @@ public class Menu {
         String path = read.nextLine();
 
         infoJson = jsonReader.lecturaArray(path);
+        if(infoJson == null) return;
 
         adyacencia = new float[infoJson.size() + 1][infoJson.size() + 1];
         indexes = new HashMap<>();
@@ -188,6 +216,7 @@ public class Menu {
             whReadyDist = true;
         }catch (IOException e){
             System.out.println("Error! Fitxer no trobat!");
+            return;
         }
     }
 
