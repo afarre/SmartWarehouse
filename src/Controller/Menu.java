@@ -2,6 +2,7 @@ package Controller;
 
 import Model.Shelve;
 import Model.Warehouse;
+import Utils.Distributor;
 import Utils.JsonReader;
 import View.WarehouseView;
 import com.google.gson.JsonArray;
@@ -140,14 +141,14 @@ public class Menu {
 
                         for (int k = 0; k < len; k++){
                             map[xstart][ystart + k] = true;
-                            warehouse.addShelve(new Shelve(), xstart, ystart + k);
+                            warehouse.addShelve(new Shelve(xstart, ystart + k));
                         }
 
                     } else {
 
                         for (int k = 0; k < len; k++){
                             map[xstart + k] [ystart] = true;
-                            warehouse.addShelve(new Shelve(), xstart + k, ystart);
+                            warehouse.addShelve(new Shelve(xstart + k, ystart));
                         }
                     }
                 }
@@ -244,8 +245,8 @@ public class Menu {
      * Distribucion de productos en las diferentes estanterias del almacen
      */
     private void opcio3() {
-
-
+        Distributor distributor = new Distributor(warehouse, map, adyacencia, indexes, warehouseView);
+        distributor.distribute();
     }
 
     /**

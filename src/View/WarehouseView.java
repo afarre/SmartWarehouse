@@ -17,8 +17,8 @@ import java.util.ArrayList;
  */
 public class WarehouseView extends JFrame {
 
-    private static final int MIN_WIDTH  = 450;
-    private static final int MIN_HEIGHT = 300;
+    private static final int MIN_WIDTH  = 1000;
+    private static final int MIN_HEIGHT = 600;
 
     private static final String MIN_SCORE_LABEL_FORMAT      = "Min score: %f";
     private static final String TRACK_COST_LABEL_FORMAT     = "Track cost: %d";

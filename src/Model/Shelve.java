@@ -7,8 +7,13 @@ public class Shelve {
 
     private Product[] shelve;
 
-    public Shelve(){
+    private int x;
+    private int y;
+
+    public Shelve(int x, int y){
         shelve = new Product[3];
+        this.x = x;
+        this.y = y;
     }
 
     public boolean addProduct(int z, Product p){
@@ -23,4 +28,11 @@ public class Shelve {
         return shelve[z];
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }
