@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Warehouse {
 
     private ArrayList<Shelve> wh;
+    private Shelve[][] whMatrix;
 
     private int entranceX;
     private int entranceY;
@@ -16,15 +17,22 @@ public class Warehouse {
         wh = new ArrayList<>();
         this.entranceX = entranceX;
         this.entranceY = entranceY;
+
+        whMatrix = new Shelve[maxX][maxY];
     }
 
     public boolean addShelve(Shelve s){
 
         wh.add(s);
+        whMatrix[s.getX()][s.getY()] = s;
         return true;
     }
 
     public ArrayList<Shelve> getWH() {
         return wh;
+    }
+
+    public Shelve getShelve(int x, int y){
+        return whMatrix[x][y];
     }
 }
