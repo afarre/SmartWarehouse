@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.Product;
 import Model.Shelve;
 import Model.Warehouse;
 import Utils.Distributor;
@@ -33,7 +34,7 @@ public class Menu {
     /**
      * Mapa del almacen, donde se indica dónde hay estanterias y donde no
      */
-    boolean map[][];
+    private boolean map[][];
 
     /**
      *  Matriz de adyacencias que guarda las  probabilidades de que dos productos esten juntos en un mismo pedido
@@ -46,6 +47,8 @@ public class Menu {
      * sea lo mas rapido posible
      */
     private HashMap<Integer, Integer> indexes;
+
+    private HashMap<Integer, String> prodNames;
 
     /**
      * Ventana que muestra el estado del almacen en cada momento
@@ -89,8 +92,10 @@ public class Menu {
                 case 4:
                     opcio4();
                     break;
+
+                case 5: return;
             }
-        }while(i != 5);
+        }while(true);
     }
 
     /**
@@ -156,14 +161,14 @@ public class Menu {
             }
         }
 
-        //-----------------Inicializamos la vista con la casilla de entrada al almacen
+        //-----------------Inicializamos la vista con la casilla de entrada al almacen--------------------------------//
         warehouseView = new WarehouseView(
                 map,
                 entranceX,
                 entranceY
         );
 
-        BoxListener boxListener = new BoxListener(warehouseView);
+        BoxListener boxListener = new BoxListener(warehouseView, warehouse);
         warehouseView.setMapMouseListener(boxListener);
         warehouseView.setVisible(false);
 
@@ -206,8 +211,17 @@ public class Menu {
         infoJson = jsonReader.lecturaArray(path);
         if(infoJson == null) return;
 
-        adyacencia = new float[infoJson.size() + 1][infoJson.size() + 1];
+        prodNames = new HashMap<>();
+        int numberOfProducts = infoJson.size();
+
+        for(int i = 0; i < numberOfProducts; i++){
+            JsonObject prod = infoJson.get(i).getAsJsonObject();
+            prodNames.put(prod.get("id").getAsInt(), prod.get("name").getAsString());
+        }
+
+        adyacencia = new float[numberOfProducts + 1][numberOfProducts + 1];
         indexes = new HashMap<>();
+
         int i = 0;
 
         System.out.println("Introduiex la ubicació del fitxer de probabilitats d'aparició dels productes: ");
@@ -251,13 +265,19 @@ public class Menu {
         distributor.distribute();
         int[] dist = distributor.getDistribution();
         System.out.println(Arrays.toString(dist));
+
+        for(int productID : indexes.keySet()){
+            Product p = new Product(productID, prodNames.get(productID));
+            warehouse.getWH().get(dist[indexes.get(productID)]).addProduct(p);
+        }
+
     }
 
     /**
      * Realizacion de pedido: calculo de la ruta mas corta de preparacion del pedido para su envio
      */
     private void opcio4() {
-
+        warehouseView.setVisible(true);
     }
 
     /**

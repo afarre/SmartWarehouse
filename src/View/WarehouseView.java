@@ -1,6 +1,7 @@
 package View;
 
 import Controller.BoxListener;
+import Model.Warehouse;
 
 import javax.swing.*;
 import java.awt.*;
@@ -259,9 +260,9 @@ public class WarehouseView extends JFrame {
         // Creem la vista
         // usem el magatzem amb la matriu anterior i el punt (x,y) d'entrada
         WarehouseView view = new WarehouseView(matrix, 1, 0);
-
+        Warehouse wh = new Warehouse(5,5,5,5);
         // Creem el controlador
-        BoxListener controlador = new BoxListener(view);
+        BoxListener controlador = new BoxListener(view, wh);
         // Establim la relació entre la vista i el controlador
         view.setMapMouseListener(controlador);
 

@@ -8,12 +8,12 @@ public class Product {
     /**
      * Identificador de producto
      */
-    int id;
+    private int id;
 
     /**
      * Nombre del producto
      */
-    String name;
+    private String name;
 
     /**
      * Construye un nuevo producto con el identificador y el nombre especificados

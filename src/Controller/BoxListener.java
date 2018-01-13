@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.Warehouse;
 import View.WarehouseView;
 
 import java.awt.*;
@@ -29,11 +30,12 @@ public class BoxListener implements MouseListener {
 
     private WarehouseView view;
 
+    private Warehouse model;
 
 
-    public BoxListener(WarehouseView view) {
+    public BoxListener(WarehouseView view, Warehouse wh) {
         this.view = view;
-        // ...
+        model = wh;
     }
 
     @Override
@@ -42,11 +44,8 @@ public class BoxListener implements MouseListener {
         Point point = e.getPoint();
 
         Point p = view.getBoxClickedPosition(point);
-        if (p == null) System.out.println("null point");
-        else {
-            // TODO: deixar a l'alumne per fer
-            // ...
-            System.out.println("han fet clic...");
+        if (p != null){
+            view.setBoxInfo(model.getShelve(p.x, p.y).getDescription());
         }
     }
 

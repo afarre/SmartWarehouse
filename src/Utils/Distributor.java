@@ -103,7 +103,7 @@ public class Distributor {
      * @return El primer nodo/producto
      */
     private int[] preparaRecorrido(int[] x, int k){
-        x[k] = 0;
+        x[k] = -1;
         return x;
     }
 
