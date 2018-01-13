@@ -44,15 +44,22 @@ public class Distributor {
 
     public void distribute(){
         int[] configuracion = new int[numberOfProducts],
-                marcage = new int[whSize];
+                marcage = new int[whSize + 1];
         int nivel = 0;
         xMillor = null;
         vMillor = whSize;
 
+        long initTime = System.currentTimeMillis();
         distribute(configuracion, nivel, marcage);
+        long executionTime = System.currentTimeMillis()-initTime;
+        System.out.println("Distribuido en " + executionTime + " ms");
     }
 
-    private int[] getDistribution(){
+    /**
+     * Devuelve la mejor distribucion almacenada
+     * @return la mejor distribucion
+     */
+    public int[] getDistribution(){
         return xMillor;
     }
 
@@ -63,14 +70,18 @@ public class Distributor {
     private int[] xMillor;
     private int vMillor;
 
-    private int[][] vDistancias;
-
+    /**
+     * Funcion recursiva que halla ma mejor distribucion los productos en las diferentes estanterias
+     * @param x Array configuracion
+     * @param k Indice del producto en el array de configuracion
+     * @param m Array con el numero de elementos en cada estanteria
+     */
     private void distribute(int[] x, int k, int[] m){
 
         x = preparaRecorrido(x, k);
 
         while(haySucesor(x, k)) {
-            siguienteHermano(x, k);
+            x = siguienteHermano(x, k);
             m = marcar(x, k, m);
 
             if (esBuena(x, k, m) && vActual < vMillor) {
@@ -85,36 +96,81 @@ public class Distributor {
         }
     }
 
+    /**
+     * Asigna el primer nodo/producto
+     * @param x Array configuracion
+     * @param k Indice del producto en el array de configuracion
+     * @return El primer nodo/producto
+     */
     private int[] preparaRecorrido(int[] x, int k){
         x[k] = 0;
         return x;
     }
 
+    /**
+     * Indica si todavia hay productos por tratar
+     * @param x Array configuracion
+     * @param k Indice del producto en el array de configuracion
+     * @return Cierto si quedan productos, falso de lo contrario
+     */
     private boolean haySucesor(int[] x, int k){
         return x[k] < whSize;
     }
 
+    /**
+     * Nos da el siguiente producto a tratar
+     * @param x Array configuracion
+     * @param k Indice del producto en el array de configuracion
+     * @return Array configuracion
+     */
     private int[] siguienteHermano(int[] x, int k){
         x[k]++;
         return x;
     }
 
+    /**
+     * Comprueba si se han tratado todos los productos
+     * @param x Array configuracion
+     * @param k Indice del producto en el array de configuracion
+     * @return Cierto si se han tratado todos los productos
+     */
     private boolean esSolucion(int[] x, int k){
         return k == numberOfProducts-1;
     }
 
+    /**
+     * Indica si la decision de colocar el producto es correcta
+     * @param x Array configuracion
+     * @param k Indice del producto en el array de configuracion
+     * @param m Array con el numero de elementos en cada estanteria
+     * @return Cierto si el producto ha sido colocado correctamente
+     */
     private boolean esBuena(int[] x, int k, int[] m){
         return m[x[k]] <= 3;
     }
 
+    /**
+     * Asigna a una estanteria un producto
+     * @param x Array configuracion
+     * @param k Indice del producto en el array de configuracion
+     * @param m Array con el numero de elementos en cada estanteria
+     * @return El array con el numero de elementos en cada estanteria actualizado
+     */
     private int[] marcar(int[] x, int k, int[] m){
-        if(m[x[k]]==0){
+        if(m[x[k]] == 0){
             vActual++;
         }
         m[x[k]]++;
         return m;
     }
 
+    /**
+     * Desasigna de una estanteria un producto
+     * @param x Array configuracion
+     * @param k Indice del producto en el array de configuracion
+     * @param m Array con el numero de elementos en cada estanteria
+     * @return El array con el numero de elementos en cada estanteria actualizado
+     */
     private int[] desmarcar(int[] x, int k, int[] m){
         m[x[k]]--;
         if(m[x[k]]==0){
@@ -123,15 +179,42 @@ public class Distributor {
         return m;
     }
 
+    /**
+     * Actualiza la mejor configuracion encontrada hasta el momento
+     * @param x Array de configuracion
+     */
     private void tratarSolucion(int[] x){
         if(xMillor == null || esMejorSolucion(x, xMillor)){
             xMillor = Arrays.copyOf(x, x.length);
             vMillor = vActual;
-            return;
         }
     }
 
+    /**
+     * Comprueba si la configuracion actual es mas optima que la mejor hallada hasta el momento
+     * @param x Array de configuracion actual
+     * @param xMillor La mejor configuracion hallada hasta el momento
+     * @return Cierto si la configuracion actual es mas optima que la mejor
+     */
     private boolean esMejorSolucion(int[] x, int[] xMillor){
-        return false;
+        double distanciasActual;
+        double totalActual = 0;
+
+        double distanciasMejor;
+        double totalMejor = 0;
+
+        int xLenght = x.length;
+        for (int i = 0; i < xLenght; i++){
+            for (int j = 0; j < xLenght; j++){
+                distanciasActual = Math.sqrt(Math.pow(wh.getWH().get(x[i]).getX() - wh.getWH().get(x[j]).getX(), 2)
+                        + Math.pow(wh.getWH().get(x[i]).getY() - wh.getWH().get(x[j]).getY(), 2));
+                totalActual = totalActual + distanciasActual * (1- probabilities[i][j]);
+
+                distanciasMejor = Math.sqrt(Math.pow(wh.getWH().get(xMillor[i]).getX() - wh.getWH().get(xMillor[j]).getX(), 2)
+                        + Math.pow(wh.getWH().get(xMillor[i]).getY() - wh.getWH().get(xMillor[j]).getY(), 2));
+                totalMejor = totalMejor + distanciasMejor * (1- probabilities[i][j]);
+            }
+        }
+        return totalActual < totalMejor;
     }
 }

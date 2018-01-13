@@ -12,6 +12,7 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -155,7 +156,7 @@ public class Menu {
             }
         }
 
-        //-----------------Inicializamos la vistacon la casilla de entrada al almacen
+        //-----------------Inicializamos la vista con la casilla de entrada al almacen
         warehouseView = new WarehouseView(
                 map,
                 entranceX,
@@ -164,6 +165,7 @@ public class Menu {
 
         BoxListener boxListener = new BoxListener(warehouseView);
         warehouseView.setMapMouseListener(boxListener);
+        warehouseView.setVisible(false);
 
         for (int i = 0; i < size; i++){
 
@@ -221,7 +223,7 @@ public class Menu {
                 lineParts = line.split(" ");
                 int p1 = Integer.parseInt(lineParts[0]);
                 int p2 = Integer.parseInt(lineParts[1]);
-                System.out.println(lineParts[2]);
+                //System.out.println(lineParts[2]);
                 float prob = Float.parseFloat(lineParts[2]);
 
                 if(!indexes.containsKey(p1)){
@@ -247,6 +249,8 @@ public class Menu {
     private void opcio3() {
         Distributor distributor = new Distributor(warehouse, map, adyacencia, indexes, warehouseView);
         distributor.distribute();
+        int[] dist = distributor.getDistribution();
+        System.out.println(Arrays.toString(dist));
     }
 
     /**
@@ -256,6 +260,10 @@ public class Menu {
 
     }
 
+    /**
+     * Comprueba si se ha introducido un entero por consola
+     * @return El entero introducido o -1 en caso de no haber introducido un entero
+     */
     private int readInt(){
         try {
             Scanner read = new Scanner(System.in);
