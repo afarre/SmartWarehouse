@@ -47,7 +47,7 @@ public class Distributor {
                 marcage = new int[whSize + 1];
         int nivel = 0;
         xMillor = null;
-        vMillor = whSize;
+        vMillor = numberOfProducts;
 
         long initTime = System.currentTimeMillis();
         distribute(configuracion, nivel, marcage);
@@ -78,14 +78,16 @@ public class Distributor {
      */
     private void distribute(int[] x, int k, int[] m){
 
-        x = preparaRecorrido(x, k);
+        x[k] = -1;
 
         while(haySucesor(x, k)) {
-            x = siguienteHermano(x, k);
+            x[k]++;
+
             m = marcar(x, k, m);
 
-            if (esBuena(x, k, m) && vActual < vMillor) {
+            if (vActual < vMillor && esBuena(x, k, m)) {
                 if (esSolucion(x, k)) {
+                    System.out.println(Arrays.toString(x));
                     tratarSolucion(x);
                 } else {
                     distribute(x, k + 1, m);
@@ -208,11 +210,11 @@ public class Distributor {
             for (int j = 0; j < xLenght; j++){
                 distanciasActual = Math.sqrt(Math.pow(wh.getWH().get(x[i]).getX() - wh.getWH().get(x[j]).getX(), 2)
                         + Math.pow(wh.getWH().get(x[i]).getY() - wh.getWH().get(x[j]).getY(), 2));
-                totalActual = totalActual + distanciasActual * (1- probabilities[i][j]);
+                totalActual = totalActual + (distanciasActual * (1- probabilities[i][j]));
 
                 distanciasMejor = Math.sqrt(Math.pow(wh.getWH().get(xMillor[i]).getX() - wh.getWH().get(xMillor[j]).getX(), 2)
                         + Math.pow(wh.getWH().get(xMillor[i]).getY() - wh.getWH().get(xMillor[j]).getY(), 2));
-                totalMejor = totalMejor + distanciasMejor * (1- probabilities[i][j]);
+                totalMejor = totalMejor + (distanciasMejor * (1- probabilities[i][j]));
             }
         }
         return totalActual < totalMejor;
