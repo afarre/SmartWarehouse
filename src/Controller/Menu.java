@@ -264,7 +264,6 @@ public class Menu {
         Distributor distributor = new Distributor(warehouse, map, adyacencia, indexes, warehouseView);
         distributor.distribute();
         int[] dist = distributor.getDistribution();
-        System.out.println(Arrays.toString(dist));
 
         for(int productID : indexes.keySet()){
             Product p = new Product(productID, prodNames.get(productID));

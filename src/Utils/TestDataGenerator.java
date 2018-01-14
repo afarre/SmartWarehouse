@@ -1,7 +1,6 @@
 package Utils;
 
 import Model.Product;
-import com.google.gson.*;
 
 import java.io.*;
 import java.util.ArrayList;

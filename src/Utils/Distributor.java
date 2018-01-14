@@ -47,7 +47,7 @@ public class Distributor {
                 marcage = new int[whSize + 1];
         int nivel = 0;
         xMillor = null;
-        vMillor = numberOfProducts;
+        vMillorShelves = numberOfProducts;
 
         long initTime = System.currentTimeMillis();
         distribute(configuracion, nivel, marcage);
@@ -68,7 +68,8 @@ public class Distributor {
     private int vActual;
 
     private int[] xMillor;
-    private int vMillor;
+    private double vMillorDist;
+    private int vMillorShelves;
 
     /**
      * Funcion recursiva que halla ma mejor distribucion los productos en las diferentes estanterias
@@ -85,7 +86,7 @@ public class Distributor {
 
             m = marcar(x, k, m);
 
-            if (vActual < vMillor && esBuena(x, k, m)) {
+            if (vActual < vMillorShelves && esBuena(x, k, m)) {
                 if (esSolucion(x, k)) {
                     System.out.println(Arrays.toString(x));
                     tratarSolucion(x);
@@ -186,9 +187,12 @@ public class Distributor {
      * @param x Array de configuracion
      */
     private void tratarSolucion(int[] x){
+        if(xMillor == null)
+            vMillorDist = valor(x);
+
         if(xMillor == null || esMejorSolucion(x, xMillor)){
             xMillor = Arrays.copyOf(x, x.length);
-            vMillor = vActual;
+            vMillorShelves = vActual;
         }
     }
 
@@ -199,24 +203,56 @@ public class Distributor {
      * @return Cierto si la configuracion actual es mas optima que la mejor
      */
     private boolean esMejorSolucion(int[] x, int[] xMillor){
-        double distanciasActual;
-        double totalActual = 0;
 
-        double distanciasMejor;
-        double totalMejor = 0;
+        double vActualDist = valor(x);
 
-        int xLenght = x.length;
-        for (int i = 0; i < xLenght; i++){
-            for (int j = 0; j < xLenght; j++){
-                distanciasActual = Math.sqrt(Math.pow(wh.getWH().get(x[i]).getX() - wh.getWH().get(x[j]).getX(), 2)
-                        + Math.pow(wh.getWH().get(x[i]).getY() - wh.getWH().get(x[j]).getY(), 2));
-                totalActual = totalActual + (distanciasActual * (1- probabilities[i][j]));
+        return vActualDist < vMillorDist;
+    }
 
-                distanciasMejor = Math.sqrt(Math.pow(wh.getWH().get(xMillor[i]).getX() - wh.getWH().get(xMillor[j]).getX(), 2)
-                        + Math.pow(wh.getWH().get(xMillor[i]).getY() - wh.getWH().get(xMillor[j]).getY(), 2));
-                totalMejor = totalMejor + (distanciasMejor * (1- probabilities[i][j]));
+    private double valor(int x[]){
+
+        int[][] mRes = new int[numberOfProducts][numberOfProducts];
+
+        //Multiplico la matriz de distancias por la matriz de probabilidades
+        for (int i = 0; i < numberOfProducts; i++) {
+            for (int j = 0; j < numberOfProducts; j++) {
+                for (int k = 0; k < numberOfProducts; k++) {
+                    // aquí se multiplica la matriz   * b[k][j]
+                    mRes[i][j] += probabilities[i][k] * Math.sqrt(Math.pow(wh.getWH().get(x[k]).getX() - wh.getWH().get(x[j]).getX(), 2)
+                            + Math.pow(wh.getWH().get(x[k]).getY() - wh.getWH().get(x[j]).getY(), 2));
+                }
             }
         }
-        return totalActual < totalMejor;
+
+        return determinant(mRes);
+    }
+
+    private int determinant(int[][] matrix){ //method sig. takes a matrix (two dimensional array), returns determinant.
+        int sum=0;
+        int s;
+        if(matrix.length==1){  //bottom case of recursion. size 1 matrix determinant is itself.
+            return(matrix[0][0]);
+        }
+        for(int i=0;i<matrix.length;i++){ //finds determinant using row-by-row expansion
+            int[][]smaller= new int[matrix.length-1][matrix.length-1]; //creates smaller matrix- values not in same row, column
+            for(int a=1;a<matrix.length;a++){
+                for(int b=0;b<matrix.length;b++){
+                    if(b<i){
+                        smaller[a-1][b]=matrix[a][b];
+                    }
+                    else if(b>i){
+                        smaller[a-1][b-1]=matrix[a][b];
+                    }
+                }
+            }
+            if(i%2==0){ //sign changes based on i
+                s=1;
+            }
+            else{
+                s=-1;
+            }
+            sum+=s*matrix[0][i]*(determinant(smaller)); //recursive step: determinant of larger determined by smaller.
+        }
+        return(sum); //returns determinant value. once stack is finished, returns final determinant.
     }
 }
