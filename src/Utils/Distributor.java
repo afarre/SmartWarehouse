@@ -2,6 +2,7 @@ package Utils;
 
 import Model.Warehouse;
 import View.WarehouseView;
+import com.sun.javafx.geom.Vec2d;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -45,8 +46,10 @@ public class Distributor {
     public void distribute(){
         int[] configuracion = new int[numberOfProducts],
                 marcage = new int[whSize + 1];
+
         int nivel = 0;
         xMillor = null;
+        vMillorDist = Double.MAX_VALUE;
         vMillorShelves = numberOfProducts;
 
         long initTime = System.currentTimeMillis();
@@ -65,6 +68,7 @@ public class Distributor {
 
     //***************************METODOS AUXILIARES Y BACTRACKING PRINCIPAL******************************************//
 
+    private double vActualDist;
     private int vActual;
 
     private int[] xMillor;
@@ -79,19 +83,25 @@ public class Distributor {
      */
     private void distribute(int[] x, int k, int[] m){
 
+        //Prepara recorrido del nivel
         x[k] = -1;
 
         while(haySucesor(x, k)) {
+
+            //Siguiente hermano
             x[k]++;
 
             m = marcar(x, k, m);
+            vActualDist = valor(x, k+1);
 
-            if (vActual < vMillorShelves && esBuena(x, k, m)) {
+
+            if (esMejorSolucion() && esBuena(x, k, m)) {
                 if (esSolucion(x, k)) {
                     System.out.println(Arrays.toString(x));
+                    System.out.println(vActualDist);
                     tratarSolucion(x);
                 } else {
-                    distribute(x, k + 1, m);
+                    if(esMejorSolucion()) distribute(x, k + 1, m);
                 }
             }
 
@@ -99,16 +109,7 @@ public class Distributor {
         }
     }
 
-    /**
-     * Asigna el primer nodo/producto
-     * @param x Array configuracion
-     * @param k Indice del producto en el array de configuracion
-     * @return El primer nodo/producto
-     */
-    private int[] preparaRecorrido(int[] x, int k){
-        x[k] = -1;
-        return x;
-    }
+
 
     /**
      * Indica si todavia hay productos por tratar
@@ -117,19 +118,9 @@ public class Distributor {
      * @return Cierto si quedan productos, falso de lo contrario
      */
     private boolean haySucesor(int[] x, int k){
-        return x[k] < whSize;
+        return x[k] < whSize-1;
     }
 
-    /**
-     * Nos da el siguiente producto a tratar
-     * @param x Array configuracion
-     * @param k Indice del producto en el array de configuracion
-     * @return Array configuracion
-     */
-    private int[] siguienteHermano(int[] x, int k){
-        x[k]++;
-        return x;
-    }
 
     /**
      * Comprueba si se han tratado todos los productos
@@ -163,7 +154,9 @@ public class Distributor {
         if(m[x[k]] == 0){
             vActual++;
         }
+
         m[x[k]]++;
+
         return m;
     }
 
@@ -187,72 +180,49 @@ public class Distributor {
      * @param x Array de configuracion
      */
     private void tratarSolucion(int[] x){
-        if(xMillor == null)
-            vMillorDist = valor(x);
 
-        if(xMillor == null || esMejorSolucion(x, xMillor)){
-            xMillor = Arrays.copyOf(x, x.length);
+            vMillorDist = vActualDist;
             vMillorShelves = vActual;
-        }
+            xMillor = Arrays.copyOf(x, x.length);
+
     }
 
     /**
      * Comprueba si la configuracion actual es mas optima que la mejor hallada hasta el momento
-     * @param x Array de configuracion actual
-     * @param xMillor La mejor configuracion hallada hasta el momento
      * @return Cierto si la configuracion actual es mas optima que la mejor
      */
-    private boolean esMejorSolucion(int[] x, int[] xMillor){
+    private boolean esMejorSolucion(){
 
-        double vActualDist = valor(x);
-
-        return vActualDist < vMillorDist;
+        return (vActualDist < vMillorDist);
     }
 
-    private double valor(int x[]){
+    /**
+     * Calcula el valor parcial o total de la configuracion que se le pase por parametro
+     * @param x Configuracion a evaluar
+     * @return Valor resultado de la evaluacion de la configuracion
+     */
+    private double valor(int x[], int mode){
 
-        int[][] mRes = new int[numberOfProducts][numberOfProducts];
+        double dists;
+        double total = 0;
 
-        //Multiplico la matriz de distancias por la matriz de probabilidades
-        for (int i = 0; i < numberOfProducts; i++) {
-            for (int j = 0; j < numberOfProducts; j++) {
-                for (int k = 0; k < numberOfProducts; k++) {
-                    // aquí se multiplica la matriz   * b[k][j]
-                    mRes[i][j] += probabilities[i][k] * Math.sqrt(Math.pow(wh.getWH().get(x[k]).getX() - wh.getWH().get(x[j]).getX(), 2)
-                            + Math.pow(wh.getWH().get(x[k]).getY() - wh.getWH().get(x[j]).getY(), 2));
-                }
+        int size;
+        if(mode == -1) size = x.length;
+        else size = mode;
+
+        for (int i = 0; i < size; i++){
+            for (int j = 0; j < size; j++){
+
+                dists = Vec2d.distance(wh.getWH().get(x[i]).getX(), wh.getWH().get(x[i]).getY(),
+                        wh.getWH().get(x[j]).getX(), wh.getWH().get(x[j]).getY()
+                );
+                total = total + dists * (1- probabilities[i][j]);
+
             }
         }
 
-        return determinant(mRes);
+        return total;
     }
 
-    private int determinant(int[][] matrix){ //method sig. takes a matrix (two dimensional array), returns determinant.
-        int sum=0;
-        int s;
-        if(matrix.length==1){  //bottom case of recursion. size 1 matrix determinant is itself.
-            return(matrix[0][0]);
-        }
-        for(int i=0;i<matrix.length;i++){ //finds determinant using row-by-row expansion
-            int[][]smaller= new int[matrix.length-1][matrix.length-1]; //creates smaller matrix- values not in same row, column
-            for(int a=1;a<matrix.length;a++){
-                for(int b=0;b<matrix.length;b++){
-                    if(b<i){
-                        smaller[a-1][b]=matrix[a][b];
-                    }
-                    else if(b>i){
-                        smaller[a-1][b-1]=matrix[a][b];
-                    }
-                }
-            }
-            if(i%2==0){ //sign changes based on i
-                s=1;
-            }
-            else{
-                s=-1;
-            }
-            sum+=s*matrix[0][i]*(determinant(smaller)); //recursive step: determinant of larger determined by smaller.
-        }
-        return(sum); //returns determinant value. once stack is finished, returns final determinant.
-    }
+
 }

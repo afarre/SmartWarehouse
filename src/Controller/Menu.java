@@ -93,9 +93,8 @@ public class Menu {
                     opcio4();
                     break;
 
-                case 5: return;
             }
-        }while(true);
+        }while(i != 5);
     }
 
     /**
@@ -112,6 +111,8 @@ public class Menu {
         if (configJson.size() != 0){
             configuraEscenari();
         }
+
+        System.out.println(warehouse.getWH().size());
     }
 
     /**

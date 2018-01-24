@@ -16,7 +16,7 @@ public class TestDataGenerator {
 
     public static void main(String[] args) {
 
-        int NUMBER_OF_PRODUCTS = 10;
+        int NUMBER_OF_PRODUCTS = 8;
 
         ArrayList<Product> plist = new ArrayList<>();
 
