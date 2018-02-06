@@ -254,7 +254,6 @@ public class Menu {
             in.close();
         }catch (IOException e){
             System.out.println("Error! Fitxer no trobat!");
-            return;
         }
     }
 
@@ -271,13 +270,20 @@ public class Menu {
             warehouse.getWH().get(dist[indexes.get(productID)]).addProduct(p);
         }
 
+        warehouseView.setVisible(true);
     }
 
     /**
      * Realizacion de pedido: calculo de la ruta mas corta de preparacion del pedido para su envio
      */
     private void opcio4() {
-        warehouseView.setVisible(true);
+
+        //Comprobacion de existencia del archivo de pedido
+
+        //Enrutamiento del robot
+
+        //Mostrar camino en la ventana grafica
+
     }
 
     /**

@@ -30,7 +30,7 @@ public class JsonReader {
 
         } catch (FileNotFoundException ko) {
             System.out.println("Error! Fitxer no trobat!");
-            //return null;
+            return null;
         } finally {
             if (br != null) {
                 try {
