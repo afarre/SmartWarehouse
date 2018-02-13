@@ -1,0 +1,44 @@
+{
+  "dim": {
+    "max_x": 10,
+    "max_y": 10,
+    "max_z": 3
+  },
+  "entrance": {
+
+    "x": 1,
+    "y": 0
+  },
+  "shelves_config": [
+
+    {
+      "id": 1,
+      "length": 8
+    },
+    {
+      "id": 2,
+      "length": 6
+    }
+  ],
+  "shelves": [
+
+    {
+      "config": 1,
+      "x_start": 0,
+      "y_start": 0,
+      "orientation": "V"
+    },
+    {
+      "config": 2,
+      "x_start": 2,
+      "y_start": 0,
+      "orientation": "V"
+    },
+    {
+      "config": 1,
+      "x_start": 0,
+      "y_start": 8,
+      "orientation": "H"
+    }
+  ]
+}
