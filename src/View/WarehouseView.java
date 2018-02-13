@@ -35,14 +35,13 @@ public class WarehouseView extends JFrame {
     private int mapDimension;
 
     /**
-     *
-     * @param map       Matriu de booleans on en cas que la posició sigui 'certa' indica que existeix
+     *  @param map       Matriu de booleans on en cas que la posició sigui 'certa' indica que existeix
      *                  una caixa d'una prestatgeria en aquella posició. Si, en canvi, el valor és 'fals'
      *                  llavors és un espai lliure.
      * @param entranceX Punt d'entrada al magatzem respecte l'eix OX.
      * @param entranceY Punt d'entrada al magatzem respecte l'eix OY.
      */
-    public WarehouseView(boolean [][]map, int entranceX, int entranceY) {
+    public WarehouseView(boolean[][] map, int entranceX, int entranceY) {
 
         assert map.length > 0;
 
@@ -167,7 +166,7 @@ public class WarehouseView extends JFrame {
      * @param descriptions  La descripció de cadascuna de les 3 caixes en les diferents altures, sent
      *                      l'ordre incremental (d'abaix a dalt).
      */
-    public void setBoxInfo(String descriptions[]) {
+    public void setBoxInfo(String[] descriptions) {
         int i = 0;
 
         for (String desc : descriptions)

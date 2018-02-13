@@ -43,6 +43,11 @@ public class JsonReader {
         return jsonObject;
     }
 
+    /**
+     * Carga y lee un fichero json
+     * @param path Directorio donde se ubica el fichero json a leer
+     * @return el fichero json leido en formato JsonArray
+     */
     public JsonArray lecturaArray(String path) {
         JsonArray jsonArray = new JsonArray();
         Gson gson = new Gson();

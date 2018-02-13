@@ -5,6 +5,7 @@ import Model.Shelve;
 import Model.Warehouse;
 import Utils.Distributor;
 import Utils.JsonReader;
+import Utils.RobotRouter;
 import View.WarehouseView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -13,7 +14,6 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -24,7 +24,7 @@ import java.util.Scanner;
 public class Menu {
     private JsonReader jsonReader = new JsonReader();
     private JsonObject configJson;
-    private JsonArray infoJson;
+    private JsonArray prodJson;
 
     /**
      * Modelo del almacen donde se guardan todos los datos de estanterias
@@ -83,7 +83,7 @@ public class Menu {
                     opcio2();
                     break;
                 case 3:
-                    if (configJson == null || infoJson == null || configJson.size() == 0 || infoJson.size() == 0){
+                    if (configJson == null || prodJson == null || configJson.size() == 0 || prodJson.size() == 0){
                         System.out.println("Error! Algun dels fitxers no ha sigut introduit o no s'ha trobat.");
                     }else {
                         opcio3();
@@ -111,8 +111,6 @@ public class Menu {
         if (configJson.size() != 0){
             configuraEscenari();
         }
-
-        System.out.println(warehouse.getWH().size());
     }
 
     /**
@@ -209,14 +207,14 @@ public class Menu {
         Scanner read = new Scanner(System.in);
         String path = read.nextLine();
 
-        infoJson = jsonReader.lecturaArray(path);
-        if(infoJson == null) return;
+        prodJson = jsonReader.lecturaArray(path);
+        if(prodJson == null) return;
 
         prodNames = new HashMap<>();
-        int numberOfProducts = infoJson.size();
+        int numberOfProducts = prodJson.size();
 
         for(int i = 0; i < numberOfProducts; i++){
-            JsonObject prod = infoJson.get(i).getAsJsonObject();
+            JsonObject prod = prodJson.get(i).getAsJsonObject();
             prodNames.put(prod.get("id").getAsInt(), prod.get("name").getAsString());
         }
 
@@ -277,13 +275,41 @@ public class Menu {
      * Realizacion de pedido: calculo de la ruta mas corta de preparacion del pedido para su envio
      */
     private void opcio4() {
+        System.out.println("Introduiex la ubicació del fitxer json de comandes: ");
+        Scanner read = new Scanner(System.in);
+        String path = read.nextLine();
 
-        //Comprobacion de existencia del archivo de pedido
+        JsonArray comandesJson = jsonReader.lecturaArray(path);
+        if(comandesJson == null) return;
+
+        if (comandesJson.size() != 0 & comprovaComandes(comandesJson, prodJson.size())){
+            RobotRouter router = new RobotRouter();
+            router.enrutaRobot(comandesJson);
+        }
 
         //Enrutamiento del robot
 
         //Mostrar camino en la ventana grafica
 
+    }
+
+
+    private boolean comprovaComandes(JsonArray comandes, int prodSize) {
+        int comandesSize = comandes.size();
+        boolean totsTrobats = true;
+        for (int i = 0; i < prodSize; i++){
+            boolean trobat = false;
+            for (int j = 0; j < comandesSize; j++){
+                if (prodJson.get(i).getAsJsonObject().get("id").getAsInt() == comandes.get(j).getAsJsonObject().get("id").getAsInt()) {
+                    trobat = true;
+                    j = comandesSize;
+                }
+            }
+            if (!trobat){
+                totsTrobats = false;
+            }
+        }
+        return totsTrobats;
     }
 
     /**

@@ -14,7 +14,7 @@ import java.util.HashMap;
  * @author Alex Vogel
  *
  */
-public class Distributor {
+public class Distributor extends  Exception{
 
     private Warehouse wh;
     private int whSize;
