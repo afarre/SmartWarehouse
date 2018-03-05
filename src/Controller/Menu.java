@@ -8,6 +8,7 @@ import Utils.JsonReader;
 import Utils.RobotRouter;
 import View.WarehouseView;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.awt.*;
@@ -49,6 +50,11 @@ public class Menu {
     private HashMap<Integer, Integer> indexes;
 
     private HashMap<Integer, String> prodNames;
+
+    /**
+     * Mapa de hash que almacena los pares idProducto-indiceDePedido para que el acceso lo mas rapido posible
+     */
+    private HashMap<Integer, Integer> orderIndexes;
 
     /**
      * Ventana que muestra el estado del almacen en cada momento
@@ -282,9 +288,23 @@ public class Menu {
         JsonArray comandesJson = jsonReader.lecturaArray(path);
         if(comandesJson == null) return;
 
+
         if (comandesJson.size() != 0 & comprovaComandes(comandesJson, prodJson.size())){
-            RobotRouter router = new RobotRouter();
-            router.enrutaRobot(comandesJson);
+
+            int orderSize = comandesJson.size();
+            Product[] orders = new Product[orderSize];
+            orderIndexes = new HashMap<>();
+
+            for (int i = 0; i < orderSize; i++){
+                JsonObject order = comandesJson.get(i).getAsJsonObject();
+
+                orders[i] = new Product(order.get("id").getAsInt(), order.get("name").getAsString());
+
+                orderIndexes.put(orders[i].getId(), i);
+            }
+
+            RobotRouter router = new RobotRouter(warehouse, orders, orderIndexes);
+            router.enrutaRobot();
         }
 
         //Enrutamiento del robot

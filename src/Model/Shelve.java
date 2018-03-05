@@ -32,6 +32,10 @@ public class Shelve {
         return shelve[z];
     }
 
+    public Product[] getShelve(){
+        return shelve;
+    }
+
     public int getX() {
         return x;
     }

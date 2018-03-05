@@ -32,7 +32,19 @@ public class Warehouse {
         return wh;
     }
 
+    public Shelve[][] getWhMatrix() {
+        return whMatrix;
+    }
+
     public Shelve getShelve(int x, int y){
         return whMatrix[x][y];
+    }
+
+    public int getEntranceX(){
+        return entranceX;
+    }
+
+    public int getEntranceY(){
+        return entranceY;
     }
 }
