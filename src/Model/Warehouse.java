@@ -40,6 +40,11 @@ public class Warehouse {
         return whMatrix[x][y];
     }
 
+    public boolean isInbounds(int x, int y){
+        return x >= 0 && x < whMatrix.length
+                && y >=0 && y < whMatrix[0].length;
+    }
+
     public int getEntranceX(){
         return entranceX;
     }

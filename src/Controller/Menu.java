@@ -98,6 +98,8 @@ public class Menu {
                 case 4:
                     opcio4();
                     break;
+                case 5:
+                    warehouseView.dispose();
 
             }
         }while(i != 5);
@@ -303,7 +305,7 @@ public class Menu {
                 orderIndexes.put(orders[i].getId(), i);
             }
 
-            RobotRouter router = new RobotRouter(warehouse, orders, orderIndexes);
+            RobotRouter router = new RobotRouter(warehouse, orders, orderIndexes, warehouseView);
             router.enrutaRobot();
         }
 
@@ -317,16 +319,17 @@ public class Menu {
     private boolean comprovaComandes(JsonArray comandes, int prodSize) {
         int comandesSize = comandes.size();
         boolean totsTrobats = true;
-        for (int i = 0; i < prodSize; i++){
+        for (int i = 0; i < comandesSize; i++){
             boolean trobat = false;
-            for (int j = 0; j < comandesSize; j++){
-                if (prodJson.get(i).getAsJsonObject().get("id").getAsInt() == comandes.get(j).getAsJsonObject().get("id").getAsInt()) {
+            for (int j = 0; j < prodSize; j++){
+                if (prodJson.get(j).getAsJsonObject().get("id").getAsInt() == comandes.get(i).getAsJsonObject().get("id").getAsInt()) {
                     trobat = true;
-                    j = comandesSize;
+                    break;
                 }
             }
             if (!trobat){
                 totsTrobats = false;
+                System.err.println("Hi ha productes a la llista de la compra no disponibles al magatzem");
             }
         }
         return totsTrobats;
