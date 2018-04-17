@@ -66,6 +66,34 @@ public class TestDataGenerator {
             e.printStackTrace();
         }
 
+        try{
+            FileWriter fw = new FileWriter(new File("order.json"));
+
+            fw.append("[\n");
+            String appendFirst = "  {\n    \"id\": %d,\n    \"name\": \"%s\"\n  }",
+                    appendNormal = ",\n  {\n    \"id\": %d,\n    \"name\": \"%s\"\n  }",
+                    append;
+
+            for(int i=0; i < NUMBER_OF_PRODUCTS; i++){
+
+                if(((r.nextInt()%100) < 50)){
+                    if(i == 0){
+                        append = String.format(appendFirst, plist.get(i).getId(), plist.get(i).getName());
+                    }else{
+                        append = String.format(appendNormal, plist.get(i).getId(), plist.get(i).getName());
+                    }
+
+                    fw.append(append);
+                }
+            }
+            fw.append("\n]");
+            fw.close();
+
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

@@ -32,7 +32,24 @@ public class Warehouse {
         return wh;
     }
 
+    public Shelve[][] getWhMatrix() {
+        return whMatrix;
+    }
+
     public Shelve getShelve(int x, int y){
         return whMatrix[x][y];
+    }
+
+    public boolean isInbounds(int x, int y){
+        return x >= 0 && x < whMatrix.length
+                && y >=0 && y < whMatrix[0].length;
+    }
+
+    public int getEntranceX(){
+        return entranceX;
+    }
+
+    public int getEntranceY(){
+        return entranceY;
     }
 }

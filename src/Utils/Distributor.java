@@ -14,7 +14,7 @@ import java.util.HashMap;
  * @author Alex Vogel
  *
  */
-public class Distributor extends  Exception{
+public class Distributor {
 
     private Warehouse wh;
     private int whSize;
@@ -97,8 +97,8 @@ public class Distributor extends  Exception{
 
             if (esMejorSolucion() && esBuena(x, k, m)) {
                 if (esSolucion(x, k)) {
-                    System.out.println(Arrays.toString(x));
-                    System.out.println(vActualDist);
+                    System.out.println("Solucion: "+Arrays.toString(x));
+                    System.out.println("Valor: "+vActualDist);
                     tratarSolucion(x);
                 } else {
                     if(esMejorSolucion()) distribute(x, k + 1, m);

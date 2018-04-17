@@ -8,6 +8,7 @@ import Utils.JsonReader;
 import Utils.RobotRouter;
 import View.WarehouseView;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.awt.*;
@@ -51,6 +52,11 @@ public class Menu {
     private HashMap<Integer, String> prodNames;
 
     /**
+     * Mapa de hash que almacena los pares idProducto-indiceDePedido para que el acceso lo mas rapido posible
+     */
+    private HashMap<Integer, Integer> orderIndexes;
+
+    /**
      * Ventana que muestra el estado del almacen en cada momento
      */
     private WarehouseView warehouseView;
@@ -92,6 +98,8 @@ public class Menu {
                 case 4:
                     opcio4();
                     break;
+                case 5:
+                    warehouseView.dispose();
 
             }
         }while(i != 5);
@@ -282,9 +290,23 @@ public class Menu {
         JsonArray comandesJson = jsonReader.lecturaArray(path);
         if(comandesJson == null) return;
 
+
         if (comandesJson.size() != 0 & comprovaComandes(comandesJson, prodJson.size())){
-            RobotRouter router = new RobotRouter();
-            router.enrutaRobot(comandesJson);
+
+            int orderSize = comandesJson.size();
+            Product[] orders = new Product[orderSize];
+            orderIndexes = new HashMap<>();
+
+            for (int i = 0; i < orderSize; i++){
+                JsonObject order = comandesJson.get(i).getAsJsonObject();
+
+                orders[i] = new Product(order.get("id").getAsInt(), order.get("name").getAsString());
+
+                orderIndexes.put(orders[i].getId(), i);
+            }
+
+            RobotRouter router = new RobotRouter(warehouse, orders, orderIndexes, warehouseView);
+            router.enrutaRobot();
         }
 
         //Enrutamiento del robot
@@ -297,16 +319,17 @@ public class Menu {
     private boolean comprovaComandes(JsonArray comandes, int prodSize) {
         int comandesSize = comandes.size();
         boolean totsTrobats = true;
-        for (int i = 0; i < prodSize; i++){
+        for (int i = 0; i < comandesSize; i++){
             boolean trobat = false;
-            for (int j = 0; j < comandesSize; j++){
-                if (prodJson.get(i).getAsJsonObject().get("id").getAsInt() == comandes.get(j).getAsJsonObject().get("id").getAsInt()) {
+            for (int j = 0; j < prodSize; j++){
+                if (prodJson.get(j).getAsJsonObject().get("id").getAsInt() == comandes.get(i).getAsJsonObject().get("id").getAsInt()) {
                     trobat = true;
-                    j = comandesSize;
+                    break;
                 }
             }
             if (!trobat){
                 totsTrobats = false;
+                System.err.println("Hi ha productes a la llista de la compra no disponibles al magatzem");
             }
         }
         return totsTrobats;
