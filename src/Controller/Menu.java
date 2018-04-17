@@ -63,8 +63,9 @@ public class Menu {
 
     /**
      * Permite la eleccion de las dintintas opciones del menu comprendidas entre 1 y 5 incluidas, con control de erorres
+     * @param arguments
      */
-    public void mostraMenu() {
+    public void mostraMenu(String[] arguments) {
         int i;
         do {
             System.out.println("\n1. Configurar magatzem");
@@ -83,10 +84,10 @@ public class Menu {
 
             switch (i){
                 case 1:
-                    opcio1();
+                    opcio1(arguments[0]);
                     break;
                 case 2:
-                    opcio2();
+                    opcio2(arguments[1], arguments[2]);
                     break;
                 case 3:
                     if (configJson == null || prodJson == null || configJson.size() == 0 || prodJson.size() == 0){
@@ -96,10 +97,11 @@ public class Menu {
                     }
                     break;
                 case 4:
-                    opcio4();
+                    opcio4(arguments[3]);
                     break;
                 case 5:
-                    warehouseView.dispose();
+                    //warehouseView.dispose();
+                    System.exit(1);
 
             }
         }while(i != 5);
@@ -107,13 +109,14 @@ public class Menu {
 
     /**
      * Pide el path del fichero json de configuracion i lo lee
+     * @param config
      */
-    private void opcio1() {
+    private void opcio1(String config) {
         System.out.println("Introduiex la ubicació del fitxer json de configuracio: ");
-        Scanner read = new Scanner(System.in);
-        String path = read.nextLine();
+        //Scanner read = new Scanner(System.in);
+        //String path = read.nextLine();
 
-        configJson = jsonReader.lecturaObject(path);
+        configJson = jsonReader.lecturaObject(config);//path
         if(configJson == null) return;
 
         if (configJson.size() != 0){
@@ -208,14 +211,16 @@ public class Menu {
 
     /**
      * Pide el path del json con la informacion del warehouse y el path del fichero de probabilidades de productos y los trata
+     * @param products
+     * @param graph
      */
-    private void opcio2() {
+    private void opcio2(String products, String graph) {
 
         System.out.println("Introduiex la ubicació del fitxer json amb la informacio dels productes: ");
-        Scanner read = new Scanner(System.in);
-        String path = read.nextLine();
+        //Scanner read = new Scanner(System.in);
+        //String path = read.nextLine();
 
-        prodJson = jsonReader.lecturaArray(path);
+        prodJson = jsonReader.lecturaArray(products);//path
         if(prodJson == null) return;
 
         prodNames = new HashMap<>();
@@ -232,10 +237,10 @@ public class Menu {
         int i = 0;
 
         System.out.println("Introduiex la ubicació del fitxer de probabilitats d'aparició dels productes: ");
-        path = read.nextLine();
+        //path = read.nextLine();
 
         try {
-            BufferedReader in = new BufferedReader(new FileReader(path));
+            BufferedReader in = new BufferedReader(new FileReader(graph));//path
 
             String line;
             String[] lineParts;
@@ -281,13 +286,14 @@ public class Menu {
 
     /**
      * Realizacion de pedido: calculo de la ruta mas corta de preparacion del pedido para su envio
+     * @param comanda
      */
-    private void opcio4() {
+    private void opcio4(String comanda) {
         System.out.println("Introduiex la ubicació del fitxer json de comandes: ");
-        Scanner read = new Scanner(System.in);
-        String path = read.nextLine();
+        //Scanner read = new Scanner(System.in);
+        //String path = read.nextLine();
 
-        JsonArray comandesJson = jsonReader.lecturaArray(path);
+        JsonArray comandesJson = jsonReader.lecturaArray(comanda);//path
         if(comandesJson == null) return;
 
 

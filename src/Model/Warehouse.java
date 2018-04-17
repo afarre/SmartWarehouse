@@ -40,6 +40,12 @@ public class Warehouse {
         return whMatrix[x][y];
     }
 
+    /**
+     * Retorna cierto si esta dentro del tablero
+     * @param x
+     * @param y
+     * @return
+     */
     public boolean isInbounds(int x, int y){
         return x >= 0 && x < whMatrix.length
                 && y >=0 && y < whMatrix[0].length;
