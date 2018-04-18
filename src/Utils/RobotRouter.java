@@ -29,6 +29,18 @@ public class RobotRouter {
 
         boolean[][] steppedCells;
 
+        public RouterMark(){}
+
+        public RouterMark(RouterMark rm){
+            this.actualX = rm.actualX;
+            this.actualY = rm.actualY;
+            this.vActual = rm.vActual;
+
+            this.lastMove = rm.lastMove;
+
+            this.steppedCells = Arrays.copyOf(rm.steppedCells, rm.steppedCells.length);
+            this.products = Arrays.copyOf(rm.products, rm.products.length);
+        }
     }
 
     /**
@@ -100,28 +112,15 @@ public class RobotRouter {
      * comprados
      */
     public void enrutaRobot() {
-        vMillor = (wh.getWhMatrix().length*wh.getWhMatrix()[0].length)/5;
+
         mark.vActual = 0;
 
         mark.actualX = wh.getEntranceX();
         mark.actualY = wh.getEntranceY();
 
-/*
-        System.out.println(mark.actualX);
-        System.out.println(mark.actualY);
-        System.out.println(mark.lastMove);
-        System.out.println(mark.vActual);
-        System.out.println(Arrays.toString(mark.products));
-        for (int i = 0; i < mark.steppedCells.length; i++) {
-            for (int j = 0; j < mark.steppedCells[i].length; j++) {
-                System.out.print(mark.steppedCells[i][j] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println(Arrays.toString(config));
-*/
-        System.out.println("lenght: " + config.length);
-        routeRobot(config, 0);
+        vMillor = (wh.getWhMatrix().length*wh.getWhMatrix()[0].length)/5;
+
+        routeRobot(config, 0, mark);
     }
 
 
@@ -132,29 +131,28 @@ public class RobotRouter {
      * @param x
      * @param k
      */
-    private void routeRobot(int[] x, int k){
+    private void routeRobot(int[] x, int k, RouterMark rMark){
+
+        RouterMark mark = new RouterMark(rMark);
+
         x[k] = -1;
         while(x[k] < 3){
             x[k]++;
             //System.out.println("\nPer a la k = " + k + " tinc una x[k] = " + x[k]);
-            marcar(x, k);
-            if (esBuena(x, k, mark) && esMejorSolucion()) {
+            marcar(x, k, mark);
+            if (esMejorSolucion(mark) && esBuena(x, k, mark)) {
                 //System.out.println("Buena: " + Arrays.toString(x));
                 wv.paintCell(mark.actualX, mark.actualY, Color.MAGENTA);
                 if (esSolucion(x, k)) {
                     System.out.println("Solución: " + Arrays.toString(x));
                     tratarSolucion(x);
                 } else {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    /*if(esMejorSolucion()) */routeRobot(x, k + 1);
+
+                    if(esMejorSolucion(mark)) routeRobot(x, k + 1, mark);
                 }
                 wv.paintCell(mark.actualX, mark.actualY, Color.WHITE);
             }
-            desmarcar(x, k);
+            desmarcar(x, k, mark);
         }
     }
 
@@ -179,8 +177,8 @@ public class RobotRouter {
             System.out.println("es estanteria. no puedo pisarla");
             return false;
         }
-        System.out.println("comprovo si la casella " + mark.actualX + " " + mark.actualY + " esta trepitjada (valor de la casella = " + mark.steppedCells[mark.actualX][mark.actualY] + ")");
-        if(mark.steppedCells[mark.actualX][mark.actualY])
+//        System.out.println("comprovo si la casella " + mark.actualX + " " + mark.actualY + " esta trepitjada (valor de la casella = " + mark.steppedCells[mark.actualX][mark.actualY] + ")");
+        if(mark.steppedCells[m.actualX][m.actualY])
             return false;
 
         if((m.lastMove == 0 && x[k] == 2)||(m.lastMove == 2 && x[k] == 0))
@@ -188,7 +186,7 @@ public class RobotRouter {
 
         if((m.lastMove == 1 && x[k] == 3)||(m.lastMove == 3 && x[k] == 1))
             return false;
-
+        System.out.println("buena");
         return true;
     }
 
@@ -221,23 +219,24 @@ public class RobotRouter {
      * Compara el valor de la solucion actual con el de la mejor encontrada hasta el momento
      * @return cierto si la actual es mejor que la almacenada como tal
      */
-    private boolean esMejorSolucion() {
-        System.out.println("Resultat del esMejorSolucion = " + (mark.vActual < vMillor));
-        return mark.vActual < vMillor;
+    private boolean esMejorSolucion(RouterMark m) {
+        //System.out.println("Resultat del esMejorSolucion = " + (mark.vActual < vMillor));
+        return m.vActual < vMillor;
     }
 
     /**
      * Restablece la marca de la solucion al estado anterior
      * @param x
      * @param k
+     * @param mark
      */
-    private void desmarcar(int[] x, int k) {
+    private void desmarcar(int[] x, int k, RouterMark mark) {
         if(wh.isInbounds(mark.actualX + 1, mark.actualY)
                 && wh.getShelve(mark.actualX + 1, mark.actualY) != null){
             Shelve s = wh.getShelve(mark.actualX + 1, mark.actualY);
             for(Product p : s.getShelve()){
                 if (p != null)
-                    this.mark.products[prodIndexes.get(p.getId())] = false;
+                    mark.products[prodIndexes.get(p.getId())] = false;
             }
         }
         if(wh.isInbounds(mark.actualX - 1, mark.actualY)
@@ -245,7 +244,7 @@ public class RobotRouter {
             Shelve s = wh.getShelve(mark.actualX - 1, mark.actualY);
             for(Product p : s.getShelve()){
                 if (p != null)
-                    this.mark.products[prodIndexes.get(p.getId())] = false;
+                    mark.products[prodIndexes.get(p.getId())] = false;
             }
         }
         if(wh.isInbounds(mark.actualX, mark.actualY + 1)
@@ -253,7 +252,7 @@ public class RobotRouter {
             Shelve s = wh.getShelve(mark.actualX, mark.actualY + 1);
             for(Product p : s.getShelve()){
                 if (p != null)
-                    this.mark.products[prodIndexes.get(p.getId())] = false;
+                    mark.products[prodIndexes.get(p.getId())] = false;
             }
         }
         if(wh.isInbounds(mark.actualX, mark.actualY - 1)
@@ -265,12 +264,6 @@ public class RobotRouter {
             }
         }
 
-        System.out.println("Comprobo isInbounds amb " + mark.actualX + " " + mark.actualY);
-        if(wh.isInbounds(mark.actualX, mark.actualY) && !esMejorSolucion()){
-            System.out.println("Desmarco la casella " + mark.actualX + " " + mark.actualY);
-            mark.steppedCells[mark.actualX][mark.actualY] = false;
-        }
-
         switch(x[k]){
             case 0:
                 mark.actualY++;
@@ -288,20 +281,24 @@ public class RobotRouter {
                 mark.actualX++;
                 break;
         }
+
+        if(wh.isInbounds(mark.actualX, mark.actualY)) {
+            mark.steppedCells[mark.actualX][mark.actualY] = false;
+            System.out.println("Desmarco la casella " + mark.actualX + " " + mark.actualY);
+        }
+
         mark.vActual--;
         if(k-1 > -1)
             mark.lastMove = x[k-1];
-        //mark.steppedCells [mark.actualX][mark.actualY] = false;
-        //System.out.println("desmarco la casella " + (x[k] - 1));
 
+        System.out.println("DESMARCATGE");
         for (int i = 0; i < mark.steppedCells.length; i++) {
             for (int j = 0; j < mark.steppedCells[i].length; j++) {
                 if (mark.steppedCells[j][i]){
-                    System.out.print("X");
+                    System.out.print("X ");
                 }else {
-                    System.out.print(".");
+                    System.out.print(". ");
                 }
-                //System.out.print(mark.steppedCells[i][j] + " ");
             }
             System.out.println();
         }
@@ -309,17 +306,18 @@ public class RobotRouter {
 
     /**
      * Establece la marca conforme la casilla en la que se encuentra el robot.
-     *
-     * @param x
+     *  @param x
      * @param k
+     * @param mark
      */
-    private void marcar(int[] x, int k) {
+    private void marcar(int[] x, int k, RouterMark mark) {
         mark.vActual++;
         mark.lastMove = x[k];
 
-        if(wh.isInbounds(mark.actualX, mark.actualY))
-            System.out.println("\nMe posiciono a la casella " + mark.actualX + " " + this.mark.actualY + " i la marco com a trepitjada i vaig a la " + x[k]);
-            this.mark.steppedCells[mark.actualX][mark.actualY] = true;
+        if(wh.isInbounds(mark.actualX, mark.actualY)){
+            System.out.println("\nMe posiciono a la casella " + mark.actualX + " " + mark.actualY + " i la marco com a trepitjada i vaig a la " + x[k]);
+            mark.steppedCells[mark.actualX][mark.actualY] = true;
+        }
 
         switch(x[k]){
             case 0:
@@ -344,7 +342,7 @@ public class RobotRouter {
             Shelve s = wh.getShelve(mark.actualX + 1, mark.actualY);
             for(Product p : s.getShelve()){
                 if (p != null)
-                    this.mark.products[prodIndexes.get(p.getId())] = true;
+                    mark.products[prodIndexes.get(p.getId())] = true;
             }
         }
         if(wh.isInbounds(mark.actualX - 1, mark.actualY)
@@ -352,7 +350,7 @@ public class RobotRouter {
             Shelve s = wh.getShelve(mark.actualX - 1, mark.actualY);
             for(Product p : s.getShelve()){
                 if (p != null)
-                    this.mark.products[prodIndexes.get(p.getId())] = true;
+                    mark.products[prodIndexes.get(p.getId())] = true;
             }
         }
         if(wh.isInbounds(mark.actualX, mark.actualY + 1)
@@ -360,7 +358,7 @@ public class RobotRouter {
             Shelve s = wh.getShelve(mark.actualX, mark.actualY + 1);
             for(Product p : s.getShelve()){
                 if (p != null)
-                    this.mark.products[prodIndexes.get(p.getId())] = true;
+                    mark.products[prodIndexes.get(p.getId())] = true;
             }
         }
         if(wh.isInbounds(mark.actualX, mark.actualY - 1)
@@ -368,22 +366,20 @@ public class RobotRouter {
             Shelve s = wh.getShelve(mark.actualX, mark.actualY - 1);
             for(Product p : s.getShelve()){
                 if (p != null)
-                    this.mark.products[prodIndexes.get(p.getId())] = true;
+                    mark.products[prodIndexes.get(p.getId())] = true;
             }
         }
-
+        System.out.println("MARCATGE");
         for (int i = 0; i < mark.steppedCells.length; i++) {
             for (int j = 0; j < mark.steppedCells[i].length; j++) {
                 if (mark.steppedCells[j][i]){
-                    System.out.print("X");
+                    System.out.print("X ");
                 }else {
-                    System.out.print(".");
+                    System.out.print(". ");
                 }
-                //System.out.print(mark.steppedCells[i][j] + " ");
             }
             System.out.println();
         }
-
     }
 }
 
