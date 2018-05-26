@@ -47,8 +47,11 @@ public class Warehouse {
      * @return
      */
     public boolean isInbounds(int x, int y){
+        //System.out.println("Length de matrix " + whMatrix.length);
+        //System.out.println("Length de matrix " + whMatrix[0].length);
+        //Tamany dels dos = 10
         return x >= 0 && x < whMatrix.length
-                && y >=0 && y < whMatrix[0].length;
+                && y >= 0 && y < whMatrix[0].length;
     }
 
     public int getEntranceX(){

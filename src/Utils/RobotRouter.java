@@ -77,7 +77,6 @@ public class RobotRouter {
     private HashMap<Integer, Integer> prodIndexes;
 
     /**
-     *
      * @param wh
      * @param orders
      */
@@ -118,8 +117,8 @@ public class RobotRouter {
         mark.actualX = wh.getEntranceX();
         mark.actualY = wh.getEntranceY();
 
-        vMillor = (wh.getWhMatrix().length*wh.getWhMatrix()[0].length)/5;
-
+        //vMillor = (wh.getWhMatrix().length*wh.getWhMatrix()[0].length)/4;
+        vMillor = 100;
         routeRobot(config, 0, mark);
     }
 
@@ -135,6 +134,17 @@ public class RobotRouter {
 
         RouterMark mark = new RouterMark(rMark);
 
+        for (int i = 0; i < wh.getWhMatrix().length; i++) {
+            for (int j = 0; j < wh.getWhMatrix()[i].length; j++) {
+                if (wh.getShelve(i, j) == null){
+                    System.out.print(". ");
+                }else {
+                    System.out.print("# ");
+                }
+            }
+            System.out.println();
+        }
+
         x[k] = -1;
         while(x[k] < 3){
             x[k]++;
@@ -142,7 +152,13 @@ public class RobotRouter {
             marcar(x, k, mark);
             if (esMejorSolucion(mark) && esBuena(x, k, mark)) {
                 //System.out.println("Buena: " + Arrays.toString(x));
+                try {
+                    Thread.sleep(0);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 wv.paintCell(mark.actualX, mark.actualY, Color.MAGENTA);
+                System.out.println("blyat: " + esSolucion(x, k));
                 if (esSolucion(x, k)) {
                     System.out.println("Solución: " + Arrays.toString(x));
                     tratarSolucion(x);
@@ -284,7 +300,7 @@ public class RobotRouter {
 
         if(wh.isInbounds(mark.actualX, mark.actualY)) {
             mark.steppedCells[mark.actualX][mark.actualY] = false;
-            System.out.println("Desmarco la casella " + mark.actualX + " " + mark.actualY);
+            System.out.println("Desmarco la casella " + mark.actualX + " " + mark.actualY + " perque is not in bounds");
         }
 
         mark.vActual--;

@@ -8,7 +8,6 @@ import Utils.JsonReader;
 import Utils.RobotRouter;
 import View.WarehouseView;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.awt.*;
@@ -281,7 +280,83 @@ public class Menu {
             warehouse.getWH().get(dist[indexes.get(productID)]).addProduct(p);
         }
 
+        insertGhostShelfs();
         warehouseView.setVisible(true);
+    }
+
+    private void insertGhostShelfs() {
+        int xSize = warehouse.getWhMatrix().length;
+        int ySize = warehouse.getWhMatrix()[0].length;
+        int compt = 0;
+
+
+        for (int i = 0; i < xSize; i++) {
+            for (int j = 0; j < ySize; j++) {
+                if(compt == 0 || compt == 1) {
+                    //esquinas
+                    if (!warehouse.isInbounds(i, j + 1) && !warehouse.isInbounds(i + 1, j)) {
+                        if (warehouse.getWhMatrix()[i - 1][j] == null && warehouse.getWhMatrix()[i][j - 1] == null) {
+                            warehouse.addShelve(new Shelve(i, j));
+
+                        }
+                    } else
+
+                    if (!warehouse.isInbounds(i, j - 1) && !warehouse.isInbounds(i + 1, j)) {
+                        if (warehouse.getWhMatrix()[i - 1][j] == null && warehouse.getWhMatrix()[i][j + 1] == null) {
+                            warehouse.addShelve(new Shelve(i, j));
+                        }
+                    } else
+
+                    if (!warehouse.isInbounds(i, j + 1) && !warehouse.isInbounds(i - 1, j)) {
+                        if (warehouse.getWhMatrix()[i + 1][j] == null && warehouse.getWhMatrix()[i][j - 1] == null) {
+                            warehouse.addShelve(new Shelve(i, j));
+                        }
+                    } else
+
+                    if (!warehouse.isInbounds(i, j - 1) && !warehouse.isInbounds(i - 1, j)) {
+                        if (warehouse.getWhMatrix()[i + 1][j] == null && warehouse.getWhMatrix()[i][j + 1] == null) {
+                            warehouse.addShelve(new Shelve(i, j));
+                        }
+                    }else
+
+                    //pared
+                    if (!warehouse.isInbounds(i - 1, j)) {
+                        if (warehouse.getWhMatrix()[i + 1][j] == null && warehouse.getWhMatrix()[i][j + 1] == null && warehouse.getWhMatrix()[i][j - 1] == null) {
+                            warehouse.addShelve(new Shelve(i, j));
+
+                        }
+                    } else
+                    if (!warehouse.isInbounds(i + 1, j)) {
+                        if (warehouse.getWhMatrix()[i - 1][j] == null && warehouse.getWhMatrix()[i][j + 1] == null && warehouse.getWhMatrix()[i][j - 1] == null) {
+                            warehouse.addShelve(new Shelve(i, j));
+                        }
+                    } else
+                    if (!warehouse.isInbounds(i, j - 1)) {
+                        if (warehouse.getWhMatrix()[i + 1][j] == null && warehouse.getWhMatrix()[i][j + 1] == null && warehouse.getWhMatrix()[i - 1][j] == null) {
+                            warehouse.addShelve(new Shelve(i, j));
+                        }
+                    } else
+                    if (!warehouse.isInbounds(i, j + 1)) {
+                        if (warehouse.getWhMatrix()[i + 1][j] == null && warehouse.getWhMatrix()[i][j - 1] == null && warehouse.getWhMatrix()[i - 1][j] == null) {
+                            warehouse.addShelve(new Shelve(i, j));
+                        }
+                    } else
+
+
+                    if (warehouse.getWhMatrix()[i + 1][j] == null
+                            && warehouse.getWhMatrix()[i][j - 1] == null && warehouse.getWhMatrix()[i - 1][j] == null
+                            && warehouse.getWhMatrix()[i][j + 1] == null) {
+                        //empty shelf
+                        warehouse.addShelve(new Shelve(i, j));
+                    }
+                }
+            }
+            compt++;
+            if (compt == 3) {
+                compt = 0;
+            }
+        }
+
     }
 
     /**
