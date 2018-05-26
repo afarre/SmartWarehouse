@@ -120,14 +120,14 @@ public class RobotRouter {
         mark.actualX = wh.getEntranceX();
         mark.actualY = wh.getEntranceY();
 
-        vMillor = (wh.getWhMatrix().length*wh.getWhMatrix()[0].length)/2;
+        vMillor = (wh.getWhMatrix().length*wh.getWhMatrix()[0].length)/3;
 
-        long initTime = System.currentTimeMillis();
+        long initTime = System.nanoTime();
         routeRobot(config, 0, mark);
-        long executionTime = System.currentTimeMillis()-initTime;
+        long executionTime = System.nanoTime()-initTime;
 
         System.out.println();
-        System.out.println("Enrutado en " + executionTime + " ms");
+        System.out.println("Enrutado en " + executionTime/1000 + " us");
         System.out.println("Mejor solucion: "+Arrays.toString(configMillor));
         System.out.println("Productos cogidos: "+Arrays.toString(configMillorProducts));
 

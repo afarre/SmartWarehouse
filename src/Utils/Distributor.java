@@ -52,10 +52,10 @@ public class Distributor {
         vMillorDist = Double.MAX_VALUE;
         vMillorShelves = numberOfProducts;
 
-        long initTime = System.currentTimeMillis();
+        long initTime = System.nanoTime();
         distribute(configuracion, nivel, marcage);
-        long executionTime = System.currentTimeMillis()-initTime;
-        System.out.println("Distribuido en " + executionTime + " ms");
+        long executionTime = System.nanoTime()-initTime;
+        System.out.println("Distribuido en " + executionTime/1000 + " us");
 
         warehouseView.setScoreInfo(vMillorShelves);
     }

@@ -1,0 +1,122 @@
+{
+  "dim": {
+    "max_x": 12,
+    "max_y": 10,
+    "max_z": 3
+  },
+  "entrance": {
+
+    "x": 6,
+    "y": 0
+  },
+  "shelves_config": [
+
+    {
+      "id": 1,
+      "length": 3
+    },
+    {
+      "id": 2,
+      "length": 1
+    }
+  ],
+  "shelves": [
+
+    {
+      "config": 1,
+      "x_start": 1,
+      "y_start": 1,
+      "orientation": "H"
+    },
+    {
+      "config": 1,
+      "x_start": 1,
+      "y_start": 3,
+      "orientation": "H"
+    },
+    {
+      "config": 1,
+      "x_start": 1,
+      "y_start": 6,
+      "orientation": "H"
+    },
+    {
+      "config": 1,
+      "x_start": 1,
+      "y_start": 8,
+      "orientation": "H"
+    },
+    {
+      "config": 1,
+      "x_start": 8,
+      "y_start": 1,
+      "orientation": "H"
+    },
+    {
+      "config": 1,
+      "x_start": 8,
+      "y_start": 3,
+      "orientation": "H"
+    },
+    {
+      "config": 1,
+      "x_start": 8,
+      "y_start": 6,
+      "orientation": "H"
+    },
+    {
+      "config": 1,
+      "x_start": 8,
+      "y_start": 8,
+      "orientation": "H"
+    },
+    {
+      "config": 2,
+      "x_start": 1,
+      "y_start": 2,
+      "orientation": "H"
+    },
+    {
+      "config": 2,
+      "x_start": 3,
+      "y_start": 2,
+      "orientation": "H"
+    },
+    {
+      "config": 2,
+      "x_start": 1,
+      "y_start": 7,
+      "orientation": "H"
+    },
+    {
+      "config": 2,
+      "x_start": 3,
+      "y_start": 7,
+      "orientation": "H"
+    },
+    {
+      "config": 2,
+      "x_start": 8,
+      "y_start": 2,
+      "orientation": "H"
+    },
+    {
+      "config": 2,
+      "x_start": 10,
+      "y_start": 2,
+      "orientation": "H"
+    },
+    {
+      "config": 2,
+      "x_start": 8,
+      "y_start": 7,
+      "orientation": "H"
+    },
+    {
+      "config": 2,
+      "x_start": 10,
+      "y_start": 7,
+      "orientation": "H"
+    }
+  ]
+}

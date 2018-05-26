@@ -274,7 +274,7 @@ public class Menu {
             warehouse.getWH().get(dist[indexes.get(productID)]).addProduct(p);
         }
 
-        insertGhostShelfs();
+        //insertGhostShelfs();
         warehouseView.setVisible(true);
     }
 

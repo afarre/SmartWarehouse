@@ -1,0 +1,56 @@
+{
+  "dim": {
+    "max_x": 10,
+    "max_y": 10,
+    "max_z": 3
+  },
+  "entrance": {
+
+    "x": 0,
+    "y": 9
+  },
+  "shelves_config": [
+
+    {
+      "id": 1,
+      "length": 8
+    },
+    {
+      "id": 2,
+      "length": 7
+    }
+  ],
+  "shelves": [
+
+    {
+      "config": 1,
+      "x_start": 1,
+      "y_start": 1,
+      "orientation": "H"
+    },
+    {
+      "config": 1,
+      "x_start": 1,
+      "y_start": 3,
+      "orientation": "H"
+    },
+    {
+      "config": 1,
+      "x_start": 1,
+      "y_start": 5,
+      "orientation": "H"
+    },
+    {
+      "config": 1,
+      "x_start": 1,
+      "y_start": 7,
+      "orientation": "H"
+    },
+    {
+      "config": 2,
+      "x_start": 3,
+      "y_start": 9,
+      "orientation": "H"
+    }
+  ]
+}
