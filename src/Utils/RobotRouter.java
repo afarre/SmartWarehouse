@@ -134,16 +134,17 @@ public class RobotRouter {
         wv.setTrackCost(vMillor);
 
         int i = 0;
-        int y = wh.getEntranceY(), x = wh.getEntranceX();
+        int y = wh.getEntranceY();
+        int x = wh.getEntranceX();
 
-        while(configMillor[i] != -1){
+        for (int j = 0; j < vMillor; j++){
             switch(configMillor[i]){
                 case 0:
                     y--;
                     break;
 
                 case 1:
-                    x--;
+                    x++;
                     break;
 
                 case 2:
@@ -151,7 +152,7 @@ public class RobotRouter {
                     break;
 
                 case 3:
-                    x++;
+                    x--;
             }
             wv.paintCell(x, y, Color.RED);
             i++;
@@ -181,12 +182,6 @@ public class RobotRouter {
                     System.out.println("Con valor = "+ mark.vActual);
                     tratarSolucion(x, mark);
                 } else {
-
-                    try {
-                        Thread.sleep(0);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
 
                     if(esMejorSolucion(mark)) routeRobot(x, k + 1, mark);
                 }
@@ -391,8 +386,6 @@ public class RobotRouter {
                     mark.products[prodIndexes.get(p.getId())] = true;
             }
         }
-
-
     }
 }
 
