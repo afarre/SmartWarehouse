@@ -27,6 +27,9 @@ public class Menu {
     private JsonObject configJson;
     private JsonArray prodJson;
 
+    private boolean op3ok = false;
+    private boolean op1ok = false;
+
     /**
      * Modelo del almacen donde se guardan todos los datos de estanterias
      */
@@ -85,8 +88,14 @@ public class Menu {
             switch (i){
                 case 1:
                     opcio1(arguments[0]);
+                    op1ok = true;
                     break;
                 case 2:
+                    if(!op1ok){
+                        System.out.println("Primer has de carregar la configuracio del mapa utilitzant la opcio 1.");
+                        System.out.println();
+                        break;
+                    }
                     opcio2(arguments[1], arguments[2]);
                     break;
                 case 3:
@@ -97,6 +106,13 @@ public class Menu {
                     }
                     break;
                 case 4:
+                    if (!op3ok){
+                        System.out.println("Primer has de distribuir els productes utilitzant la opcio 3.");
+                        System.out.println();
+                        break;
+                    }
+
+                    System.out.println("Llegint el fitxer json de comandes...");
                     opcio4(arguments[3]);
                     break;
                 case 5:
@@ -358,7 +374,6 @@ public class Menu {
      * @param comanda
      */
     private void opcio4(String comanda) {
-        System.out.println("Llegint el fitxer json de comandes...");
 
         JsonArray comandesJson = jsonReader.lecturaArray(comanda);
         if(comandesJson == null) return;
