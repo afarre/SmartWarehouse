@@ -8,6 +8,7 @@ import Utils.JsonReader;
 import Utils.RobotRouter;
 import View.WarehouseView;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.awt.*;
@@ -112,8 +113,6 @@ public class Menu {
      */
     private void opcio1(String config) {
         System.out.println("Introduiex la ubicació del fitxer json de configuracio: ");
-        //Scanner read = new Scanner(System.in);
-        //String path = read.nextLine();
 
         configJson = jsonReader.lecturaObject(config);//path
         if(configJson == null) return;
@@ -179,7 +178,6 @@ public class Menu {
 
         BoxListener boxListener = new BoxListener(warehouseView, warehouse);
         warehouseView.setMapMouseListener(boxListener);
-        warehouseView.setVisible(false);
 
         for (int i = 0; i < size; i++){
 
@@ -215,9 +213,7 @@ public class Menu {
      */
     private void opcio2(String products, String graph) {
 
-        System.out.println("Introduiex la ubicació del fitxer json amb la informacio dels productes: ");
-        //Scanner read = new Scanner(System.in);
-        //String path = read.nextLine();
+        System.out.println("Introduint la informacio dels productes...");
 
         prodJson = jsonReader.lecturaArray(products);//path
         if(prodJson == null) return;
@@ -235,8 +231,7 @@ public class Menu {
 
         int i = 0;
 
-        System.out.println("Introduiex la ubicació del fitxer de probabilitats d'aparició dels productes: ");
-        //path = read.nextLine();
+        System.out.println("Introduint les probabilitats d'aparició dels productes...");
 
         try {
             BufferedReader in = new BufferedReader(new FileReader(graph));//path
@@ -248,7 +243,6 @@ public class Menu {
                 lineParts = line.split(" ");
                 int p1 = Integer.parseInt(lineParts[0]);
                 int p2 = Integer.parseInt(lineParts[1]);
-                //System.out.println(lineParts[2]);
                 float prob = Float.parseFloat(lineParts[2]);
 
                 if(!indexes.containsKey(p1)){
@@ -319,36 +313,36 @@ public class Menu {
                         }
                     }else
 
-                    //pared
-                    if (!warehouse.isInbounds(i - 1, j)) {
-                        if (warehouse.getWhMatrix()[i + 1][j] == null && warehouse.getWhMatrix()[i][j + 1] == null && warehouse.getWhMatrix()[i][j - 1] == null) {
-                            warehouse.addShelve(new Shelve(i, j));
+                        //pared
+                        if (!warehouse.isInbounds(i - 1, j)) {
+                            if (warehouse.getWhMatrix()[i + 1][j] == null && warehouse.getWhMatrix()[i][j + 1] == null && warehouse.getWhMatrix()[i][j - 1] == null) {
+                                warehouse.addShelve(new Shelve(i, j));
 
-                        }
-                    } else
-                    if (!warehouse.isInbounds(i + 1, j)) {
-                        if (warehouse.getWhMatrix()[i - 1][j] == null && warehouse.getWhMatrix()[i][j + 1] == null && warehouse.getWhMatrix()[i][j - 1] == null) {
-                            warehouse.addShelve(new Shelve(i, j));
-                        }
-                    } else
-                    if (!warehouse.isInbounds(i, j - 1)) {
-                        if (warehouse.getWhMatrix()[i + 1][j] == null && warehouse.getWhMatrix()[i][j + 1] == null && warehouse.getWhMatrix()[i - 1][j] == null) {
-                            warehouse.addShelve(new Shelve(i, j));
-                        }
-                    } else
-                    if (!warehouse.isInbounds(i, j + 1)) {
-                        if (warehouse.getWhMatrix()[i + 1][j] == null && warehouse.getWhMatrix()[i][j - 1] == null && warehouse.getWhMatrix()[i - 1][j] == null) {
-                            warehouse.addShelve(new Shelve(i, j));
-                        }
-                    } else
+                            }
+                        } else
+                        if (!warehouse.isInbounds(i + 1, j)) {
+                            if (warehouse.getWhMatrix()[i - 1][j] == null && warehouse.getWhMatrix()[i][j + 1] == null && warehouse.getWhMatrix()[i][j - 1] == null) {
+                                warehouse.addShelve(new Shelve(i, j));
+                            }
+                        } else
+                        if (!warehouse.isInbounds(i, j - 1)) {
+                            if (warehouse.getWhMatrix()[i + 1][j] == null && warehouse.getWhMatrix()[i][j + 1] == null && warehouse.getWhMatrix()[i - 1][j] == null) {
+                                warehouse.addShelve(new Shelve(i, j));
+                            }
+                        } else
+                        if (!warehouse.isInbounds(i, j + 1)) {
+                            if (warehouse.getWhMatrix()[i + 1][j] == null && warehouse.getWhMatrix()[i][j - 1] == null && warehouse.getWhMatrix()[i - 1][j] == null) {
+                                warehouse.addShelve(new Shelve(i, j));
+                            }
+                        } else
 
 
-                    if (warehouse.getWhMatrix()[i + 1][j] == null
-                            && warehouse.getWhMatrix()[i][j - 1] == null && warehouse.getWhMatrix()[i - 1][j] == null
-                            && warehouse.getWhMatrix()[i][j + 1] == null) {
-                        //empty shelf
-                        warehouse.addShelve(new Shelve(i, j));
-                    }
+                        if (warehouse.getWhMatrix()[i + 1][j] == null
+                                && warehouse.getWhMatrix()[i][j - 1] == null && warehouse.getWhMatrix()[i - 1][j] == null
+                                && warehouse.getWhMatrix()[i][j + 1] == null) {
+                            //empty shelf
+                            warehouse.addShelve(new Shelve(i, j));
+                        }
                 }
             }
             compt++;
@@ -364,15 +358,13 @@ public class Menu {
      * @param comanda
      */
     private void opcio4(String comanda) {
-        System.out.println("Introduiex la ubicació del fitxer json de comandes: ");
-        //Scanner read = new Scanner(System.in);
-        //String path = read.nextLine();
+        System.out.println("Llegint el fitxer json de comandes...");
 
-        JsonArray comandesJson = jsonReader.lecturaArray(comanda);//path
+        JsonArray comandesJson = jsonReader.lecturaArray(comanda);
         if(comandesJson == null) return;
 
 
-        if (comandesJson.size() != 0 & comprovaComandes(comandesJson, prodJson.size())){
+        if (comandesJson.size() != 0 && comprovaComandes(comandesJson, prodJson.size())){
 
             int orderSize = comandesJson.size();
             Product[] orders = new Product[orderSize];
@@ -388,11 +380,10 @@ public class Menu {
 
             RobotRouter router = new RobotRouter(warehouse, orders, orderIndexes, warehouseView);
             router.enrutaRobot();
+
+
         }
 
-        //Enrutamiento del robot
-
-        //Mostrar camino en la ventana grafica
 
     }
 

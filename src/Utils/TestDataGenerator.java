@@ -16,7 +16,7 @@ public class TestDataGenerator {
 
     public static void main(String[] args) {
 
-        int NUMBER_OF_PRODUCTS = 8;
+        int NUMBER_OF_PRODUCTS = 9;
 
         ArrayList<Product> plist = new ArrayList<>();
 
@@ -49,7 +49,7 @@ public class TestDataGenerator {
         }
 
         try{
-            FileWriter fw = new FileWriter(new File("probs.txt"));
+            FileWriter fw = new FileWriter(new File("graph.txt"));
 
             for(Product p : plist){
                 for(Product l : plist){
@@ -67,7 +67,7 @@ public class TestDataGenerator {
         }
 
         try{
-            FileWriter fw = new FileWriter(new File("order.json"));
+            FileWriter fw = new FileWriter(new File("comanda.json"));
 
             fw.append("[\n");
             String appendFirst = "  {\n    \"id\": %d,\n    \"name\": \"%s\"\n  }",

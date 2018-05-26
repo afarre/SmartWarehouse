@@ -56,6 +56,8 @@ public class Distributor {
         distribute(configuracion, nivel, marcage);
         long executionTime = System.currentTimeMillis()-initTime;
         System.out.println("Distribuido en " + executionTime + " ms");
+
+        warehouseView.setScoreInfo(vMillorShelves);
     }
 
     /**
@@ -97,8 +99,6 @@ public class Distributor {
 
             if (esMejorSolucion() && esBuena(x, k, m)) {
                 if (esSolucion(x, k)) {
-                    //System.out.println("Solucion: "+Arrays.toString(x));
-                    //System.out.println("Valor: "+vActualDist);
                     tratarSolucion(x);
                 } else {
                     if(esMejorSolucion()) distribute(x, k + 1, m);
