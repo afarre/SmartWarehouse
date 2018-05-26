@@ -21,8 +21,11 @@ import java.util.Scanner;
 
 /**
  * Created by angel on 14/12/2017.
+ *
+ * Desarrollado por Alex Vogel y Angel Farre para la asignatura de Programacion Avanzada y Estructuras de
+ * datos.
  */
-public class Menu {
+public class SmartWarehouse {
     private JsonReader jsonReader = new JsonReader();
     private JsonObject configJson;
     private JsonArray prodJson;

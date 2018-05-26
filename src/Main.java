@@ -1,11 +1,11 @@
-import Controller.Menu;
+import Controller.SmartWarehouse;
 
 /**
  * Created by angel on 13/12/2017.
  */
 public class Main {
     public static void main(String[] arguments) {
-        Menu menu = new Menu();
-        menu.mostraMenu(arguments);
+        SmartWarehouse smartWarehouse = new SmartWarehouse();
+        smartWarehouse.mostraMenu(arguments);
     }
 }
